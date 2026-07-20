@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
@@ -125,7 +125,20 @@ export default function App() {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  const nextSlide = () => setSlide(s => (s === 4 ? 1 : (s + 1) as Slide));
+  // Scroll the mouse wheel / trackpad to move between frames (throttled: one scroll = one frame)
+  const lastScroll = useRef(0);
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 4) return;
+      const now = Date.now();
+      if (now - lastScroll.current < 650) return;
+      lastScroll.current = now;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      setSlide(s => ((((s - 1 + dir + 4) % 4) + 1) as Slide));
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
 
   const isPurple = slide >= 3;
 
@@ -153,7 +166,7 @@ export default function App() {
   const ph2Top = slide < 3 ? 950 : slide === 3 ? 843 : 387;
 
   return (
-    <div className="w-full h-screen bg-black overflow-hidden" onClick={nextSlide} style={{ cursor: "pointer" }}>
+    <div className="w-full h-screen bg-black overflow-hidden">
       <div
         className="absolute overflow-hidden"
         style={{
