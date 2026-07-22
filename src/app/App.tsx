@@ -5,9 +5,9 @@ import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698
 import imgPremiumPhoto from "@/imports/Component9-1/16a8882261213fd28e74883e457af281e75a728f.png";
 import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4f715e6.png";
 
-type Slide = 1 | 2 | 3 | 4;
+type Slide = 1 | 2 | 3;
 
-const DUR = 0.9;
+const DUR = 0.38;
 const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 const T = { duration: DUR, ease: EASE };
 
@@ -74,18 +74,19 @@ function MoneyLabel({ amount, label, visible }: { amount: string; label: string;
 
 // ─── Phone frame ─────────────────────────────────────────────────────────────
 function PhoneFrame({
-  left, topTarget, visible, img, imgSize, imgOffset, notchTop, amount, label, amountVisible, amountTop,
+  left, leftStart, topTarget, visible, img, imgSize, imgOffset, notchTop, amount, label, amountVisible, amountTop, transition,
 }: {
-  left: number; topTarget: number; visible: boolean; img: string;
+  left: number; leftStart: number; topTarget: number; visible: boolean; img: string;
   imgSize: { w: number; h: number }; imgOffset: { l: number; t: number }; notchTop: number;
   amount: string; label: string; amountVisible: boolean; amountTop: number;
+  transition: { duration: number; ease: [number, number, number, number] };
 }) {
   return (
     <motion.div
       className="absolute overflow-hidden"
-      style={{ left, width: 387.985, height: 514.468, borderTopLeftRadius: 44, borderTopRightRadius: 44, backgroundColor: "#717171" }}
-      animate={{ top: topTarget, opacity: visible ? 1 : 0 }}
-      transition={T}
+      style={{ width: 387.985, height: 514.468, borderTopLeftRadius: 44, borderTopRightRadius: 44, backgroundColor: "#717171", zIndex: 1 }}
+      animate={{ left: visible ? left : leftStart, top: topTarget, opacity: visible ? 1 : 0, scale: visible ? 1 : 0.82 }}
+      transition={transition}
     >
       <div className="absolute overflow-hidden pointer-events-none"
            style={{ width: imgSize.w, height: imgSize.h, left: imgOffset.l, top: imgOffset.t }}>
@@ -125,48 +126,64 @@ export default function App() {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  // Scroll the mouse wheel / trackpad to move between frames (throttled: one scroll = one frame)
-  const lastScroll = useRef(0);
+  // Move between frames (throttled). dir 1 = next, -1 = previous.
+  const lastAct = useRef(0);
+  const touchStartY = useRef(0);
+  const prevSlide = useRef<Slide>(1);
+  const go = (dir: 1 | -1) => {
+    const now = Date.now();
+    if (now - lastAct.current < 380) return;   // throttle: one gesture = one frame
+    lastAct.current = now;
+    setSlide(s => ((((s - 1 + dir + 3) % 3) + 1) as Slide));
+  };
+
+  // Desktop mouse-wheel / trackpad scroll
   useEffect(() => {
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < 4) return;
-      const now = Date.now();
-      if (now - lastScroll.current < 650) return;
-      lastScroll.current = now;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      setSlide(s => ((((s - 1 + dir + 4) % 4) + 1) as Slide));
-    };
+    const onWheel = (e: WheelEvent) => { if (Math.abs(e.deltaY) >= 4) go(e.deltaY > 0 ? 1 : -1); };
     window.addEventListener("wheel", onWheel, { passive: true });
     return () => window.removeEventListener("wheel", onWheel);
   }, []);
 
   const isPurple = slide >= 3;
 
-  // Nav colours
-  const logoFill  = slide === 2 ? "#8A2470" : "#ffffff";
-  const linkColor = slide === 2 ? "#a82486" : "#ffffff";
-  const btnBg     = slide === 2 ? "#8a2470" : "#ffffff";
-  const btnText   = slide === 2 ? "#ffffff"  : "#36052a";
+  // Nav colours — white on frame 1 (over the photo) and frame 3 (over the magenta bg); magenta on frame 2 (over the white card)
+  const navWhite  = slide === 1 || slide === 3;
+  const logoFill  = navWhite ? "#ffffff" : "#750558";
+  const linkColor = navWhite ? "#ffffff" : "#750558";
+  const btnBg     = navWhite ? "#ffffff" : "#750558";
+  const btnText   = navWhite ? "#36052a" : "#ffffff";
 
   // Mask — slides 3 & 4 both use exactly #750558; bg div matches so there's
   // never a colour mismatch between the two purple slides
-  const maskD    = slide <= 2 ? svgPaths.p32a00 : slide === 3 ? svgPaths.p9ef1a00 : svgPaths.p3aa52400;
-  const maskFill = isPurple ? "#750558" : "#ffffff";
+  const maskD    = slide <= 2 ? svgPaths.p32a00 : svgPaths.p3aa52400;
+  const maskFill = slide === 3 ? "#750558" : "#ffffff";
+
+  // Any transition into or out of frame 1 (the full family hero) snaps fast; the rest use the normal morph speed.
+  const involvesHero = slide === 1 || prevSlide.current === 1;
+  const T = { duration: involvesHero ? 0 : DUR, ease: EASE };
+  // Cards fan out only when arriving on frame 3; when leaving they disappear instantly (no reverse-shrink).
+  const cardT = { duration: slide === 3 ? DUR : 0, ease: EASE };
+  useEffect(() => { prevSlide.current = slide; }, [slide]);
 
   // Hero
   const heroW   = slide === 1 ? 1452.933 : 1134.735;
   const heroH   = slide === 1 ? 838.379  : 654.77;
-  const heroTop = slide === 1 ? -17 : slide === 2 ? 166.61 : slide === 3 ? 202.61 : 205.61;
+  const heroTop = slide === 1 ? -17 : slide === 2 ? 166.61 : 205.61;
 
   // Headline position: slides 3 & 4 move up to top
   const hlTop = slide <= 2 ? (slide === 1 ? 614 : 607) : 141.61;
 
-  // Phone Y: hidden below fold in slides 1–3, slide up to visible in slide 4
-  const ph1Top = slide < 3 ? 950 : slide === 3 ? 832 : 396;
-  const ph2Top = slide < 3 ? 950 : slide === 3 ? 843 : 387;
 
   return (
-    <div className="w-full h-screen bg-black overflow-hidden">
+    <div
+      className="w-full h-screen bg-black overflow-hidden"
+      style={{ touchAction: "none", overscrollBehavior: "none" }}
+      onPointerDown={(e) => { touchStartY.current = e.clientY; }}
+      onPointerUp={(e) => {
+        const dy = touchStartY.current - e.clientY;
+        if (Math.abs(dy) >= 30) go(dy > 0 ? 1 : -1);   // swipe up = next, down = previous
+      }}
+    >
       <div
         className="absolute overflow-hidden"
         style={{
@@ -284,23 +301,25 @@ export default function App() {
         </motion.p>
 
         {/* ── Money labels ──────────────────────────────────────────────────── */}
-        <MoneyLabel amount="$ 1500" label="Sent Home"      visible={slide === 2 || slide === 3} />
-        <MoneyLabel amount="$ 800"  label="Sent to family" visible={slide === 4} />
+        <MoneyLabel amount="$ 1500" label="Sent Home"      visible={slide === 2} />
+        <MoneyLabel amount="$ 800"  label="Sent to family" visible={slide === 3} />
 
         {/* ── Phone frames ──────────────────────────────────────────────────── */}
         <PhoneFrame
-          left={76} topTarget={ph1Top} visible={slide >= 3}
+          left={76} leftStart={532} topTarget={312} visible={slide === 3}
           img={imgPremiumPhoto}
           imgSize={{ w: 846.709, h: 538.792 }} imgOffset={{ l: -237.81, t: -21.31 }}
           notchTop={33.41}
-          amount="$ 1500" label="Sent to Home" amountVisible={slide === 4} amountTop={213}
+          amount="$ 1500" label="Sent to Home" amountVisible={slide === 3} amountTop={213}
+          transition={cardT}
         />
         <PhoneFrame
-          left={987} topTarget={ph2Top} visible={slide >= 3}
+          left={987} leftStart={532} topTarget={312} visible={slide === 3}
           img={img746B3D}
           imgSize={{ w: 931.3, h: 516 }} imgOffset={{ l: -271.66, t: -1 }}
           notchTop={22.41}
-          amount="$ 2000" label="Sent for STUDY" amountVisible={slide === 4} amountTop={213}
+          amount="$ 2000" label="Sent for STUDY" amountVisible={slide === 3} amountTop={213}
+          transition={cardT}
         />
 
         {/* ── Zolt Assurance pill (slide 4) ─────────────────────────────────── */}
