@@ -7,8 +7,8 @@ import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4
 
 type Slide = 1 | 2 | 3;
 
-const DUR = 0.38;
-const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
+const DUR = 0.85;
+const EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
 const T = { duration: DUR, ease: EASE };
 
 // ─── Panda Money logo ─────────────────────────────────────────────────────────
@@ -158,17 +158,14 @@ export default function App() {
   const maskD    = slide <= 2 ? svgPaths.p32a00 : svgPaths.p3aa52400;
   const maskFill = slide === 3 ? "#750558" : "#ffffff";
 
-  // Any transition into or out of frame 1 (the full family hero) snaps fast; the rest use the normal morph speed.
+  // Frame 1 ⇆ 2 uses a slow, gentle cross-fade (no shrink); frames 2 ⇆ 3 keep the normal morph speed.
   const involvesHero = slide === 1 || prevSlide.current === 1;
-  const T = { duration: involvesHero ? 0 : DUR, ease: EASE };
+  const T = involvesHero
+    ? { duration: DUR, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }
+    : { duration: DUR, ease: EASE };
   // Cards fan out only when arriving on frame 3; when leaving they disappear instantly (no reverse-shrink).
   const cardT = { duration: slide === 3 ? DUR : 0, ease: EASE };
   useEffect(() => { prevSlide.current = slide; }, [slide]);
-
-  // Hero
-  const heroW   = slide === 1 ? 1452.933 : 1134.735;
-  const heroH   = slide === 1 ? 838.379  : 654.77;
-  const heroTop = slide === 1 ? -17 : slide === 2 ? 166.61 : 205.61;
 
   // Headline position: slides 3 & 4 move up to top
   const hlTop = slide <= 2 ? (slide === 1 ? 614 : 607) : 141.61;
@@ -204,11 +201,15 @@ export default function App() {
           }}
         />
 
-        {/* ── Hero image ────────────────────────────────────────────────────── */}
+        {/* ── Family photo — full-bleed & STATIC across frames 1↔2 (so 1→2 has zero shrink; the mask just forms the card). Returns to its original card size/position for frame 3. ── */}
         <motion.div
           className="absolute overflow-hidden"
           style={{ left: "calc(50% + 6.47px)", transform: "translateX(-50%)" }}
-          animate={{ width: heroW, height: heroH, top: heroTop }}
+          animate={{
+            width:  slide === 1 ? 1452.933 : 1134.735,
+            height: slide === 1 ? 838.379  : 654.77,
+            top:    slide === 1 ? -17 : slide === 2 ? 166.61 : 205.61,
+          }}
           transition={T}
         >
           <img alt="Family" src={imgImage1} className="absolute max-w-none"
@@ -306,7 +307,7 @@ export default function App() {
 
         {/* ── Phone frames ──────────────────────────────────────────────────── */}
         <PhoneFrame
-          left={76} leftStart={532} topTarget={312} visible={slide === 3}
+          left={76} leftStart={532} topTarget={352} visible={slide === 3}
           img={imgPremiumPhoto}
           imgSize={{ w: 846.709, h: 538.792 }} imgOffset={{ l: -237.81, t: -21.31 }}
           notchTop={33.41}
@@ -314,7 +315,7 @@ export default function App() {
           transition={cardT}
         />
         <PhoneFrame
-          left={987} leftStart={532} topTarget={312} visible={slide === 3}
+          left={987} leftStart={532} topTarget={352} visible={slide === 3}
           img={img746B3D}
           imgSize={{ w: 931.3, h: 516 }} imgOffset={{ l: -271.66, t: -1 }}
           notchTop={22.41}
@@ -332,37 +333,15 @@ export default function App() {
           animate={{ opacity: slide >= 3 ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Zolt logo icon */}
-          <div style={{ width: 30.323, height: 30, position: "relative", overflow: "hidden" }}>
-            {/* Polygon shell */}
-            <div className="absolute" style={{ left: -2.01, top: -3.59, width: 33.144, height: 35.507 }}>
-              <div className="absolute flex items-center justify-center"
-                   style={{ left: -0.45, top: -0.75, width: 30.022, height: 29.813 }}>
-                <div style={{ transform: "scaleY(-1) rotate(9.44deg) skewX(-5.02deg)" }}>
-                  <div style={{ width: 23.542, height: 26.794, position: "relative" }}>
-                    <div className="absolute" style={{ top: "0.28%", left: 0, right: "-2.64%", bottom: "-5.93%" }}>
-                      <svg className="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24.1625 28.3067">
-                        <path d={svgPaths.p35a83d00} fill="#CA119A" />
-                        <path d={svgPaths.p6f86c00} stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.7" strokeWidth="2.06406" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Lightning bolt */}
-              <div className="absolute" style={{ top: "16.42%", left: "22.23%", right: "27.23%", bottom: "23.38%" }}>
-                <div className="absolute" style={{ top: "3.11%", left: "15.62%", right: "15.64%", bottom: "3.13%" }}>
-                  <svg className="absolute inset-0 w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10.5341 16.9339">
-                    <defs>
-                      <linearGradient id="bolt-g" x1="3.768" x2="5.267" y1="-3.845" y2="16.934" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#A4B3AE" /><stop offset="1" stopColor="#ffffff" />
-                      </linearGradient>
-                    </defs>
-                    <path d={svgPaths.p3c71d300} fill="url(#bolt-g)" stroke="#E2E2E2" strokeWidth="0.17" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          {/* Zolt logo icon — magenta shield (flat rounded top) + white lightning bolt */}
+          <div style={{ width: 30, height: 30, position: "relative", flexShrink: 0 }}>
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+              <path
+                d="M9 3 H23 C25 3 26.5 4.5 26.5 6.5 V15 C26.5 22 21.5 27 16 29.5 C10.5 27 5.5 22 5.5 15 V6.5 C5.5 4.5 7 3 9 3 Z"
+                fill="#CA119A"
+              />
+              <path d="M18 7.5 L9.8 18 H14.6 L13.4 24.5 L22.2 13.5 H17.2 Z" fill="#ffffff" />
+            </svg>
           </div>
           <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#ffffff", whiteSpace: "nowrap", lineHeight: "29.335px" }}>
             Zolt Assurance
