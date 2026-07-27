@@ -1,0 +1,36 @@
+import cards from "@/imports/section6/cards.png";
+
+// ─── Section 6 — "One card. Every country you call home." ─────────────────────
+const PLUM = "#3F0831";
+const CREAM = "#FFFBF2";
+const font = "'Plus Jakarta Sans', sans-serif";
+
+export default function Section6() {
+  return (
+    <section style={{ width: "100%", backgroundColor: CREAM, padding: "44px 0 64px" }}>
+      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px", textAlign: "center", boxSizing: "border-box" }}>
+        <h2
+          style={{
+            fontFamily: font, fontWeight: 700, fontSize: 48, lineHeight: 1.2,
+            color: PLUM, margin: 0,
+          }}
+        >
+          One card. Every country you call home.
+        </h2>
+        <p
+          style={{
+            fontFamily: font, fontWeight: 500, fontSize: 18, color: PLUM,
+            opacity: 0.85, margin: "12px 0 0 0",
+          }}
+        >
+          We brings everything together so you can send, spend, save, and grow
+        </p>
+      </div>
+
+      {/* Three-card row */}
+      <div style={{ maxWidth: 1180, margin: "24px auto 0", padding: "0 24px", boxSizing: "border-box" }}>
+        <img src={cards} alt="Spend anywhere, Smarter currency conversion, Everyday payments" style={{ width: "100%", height: "auto", display: "block" }} />
+      </div>
+    </section>
+  );
+}

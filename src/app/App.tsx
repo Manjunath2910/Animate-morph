@@ -1,5 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
+import Section2 from "./Section2";
+import Section3 from "./Section3";
+import Section4 from "./Section4";
+import Section5 from "./Section5";
+import Section6 from "./Section6";
+import Section7 from "./Section7";
+import Section8 from "./Section8";
+import Section9 from "./Section9";
+import Section10 from "./Section10";
+import ScaleToFit from "./ScaleToFit";
+import MobileHero from "./MobileHero";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
 import imgPremiumPhoto from "@/imports/Component9-1/16a8882261213fd28e74883e457af281e75a728f.png";
@@ -115,11 +126,13 @@ function PhoneFrame({
 export default function App() {
   const [slide, setSlide] = useState<Slide>(1);
   const [layout, setLayout] = useState({ scale: 1, ox: 0, oy: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const calc = () => {
-      const s = Math.min(window.innerWidth / 1440, window.innerHeight / 800);
-      setLayout({ scale: s, ox: Math.max(0, (window.innerWidth - 1440 * s) / 2), oy: Math.max(0, (window.innerHeight - 800 * s) / 2) });
+      const s = window.innerWidth / 1440;   // scale the fixed 1440 design uniformly to the viewport width → exact Figma alignment, no side boxes
+      setLayout({ scale: s, ox: 0, oy: 0 });
+      setIsMobile(window.innerWidth < 640);   // phones get a dedicated portrait hero instead of the shrunk desktop one
     };
     calc();
     window.addEventListener("resize", calc);
@@ -133,14 +146,27 @@ export default function App() {
   const go = (dir: 1 | -1) => {
     const now = Date.now();
     if (now - lastAct.current < 380) return;   // throttle: one gesture = one frame
+    const cur = prevSlide.current;
+    const next = Math.min(3, Math.max(1, cur + dir)) as Slide;   // clamp — no wrap, so we can hand off to the page
+    if (next === cur) return;
     lastAct.current = now;
-    setSlide(s => ((((s - 1 + dir + 3) % 3) + 1) as Slide));
+    setSlide(next);
   };
 
-  // Desktop mouse-wheel / trackpad scroll
+  // Desktop wheel: the hero pins & swaps frames until the last one, then releases so the page
+  // scrolls normally into Section 2 (and re-captures when you scroll back up to the top).
   useEffect(() => {
-    const onWheel = (e: WheelEvent) => { if (Math.abs(e.deltaY) >= 4) go(e.deltaY > 0 ? 1 : -1); };
-    window.addEventListener("wheel", onWheel, { passive: true });
+    const onWheel = (e: WheelEvent) => {
+      if (window.innerWidth < 640) return;   // no scroll-jack on phones — the mobile hero scrolls normally
+      if (Math.abs(e.deltaY) < 4) return;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const cur = prevSlide.current;
+      const atTop = window.scrollY <= 1;
+      if (dir === 1 && cur < 3) { e.preventDefault(); go(1); return; }          // advance frames, stay pinned
+      if (dir === -1 && atTop && cur > 1) { e.preventDefault(); go(-1); return; } // step back frames at the top
+      // otherwise: let the page scroll (down into Section 2, or up back to the hero)
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
   }, []);
 
@@ -172,9 +198,11 @@ export default function App() {
 
 
   return (
+    <>
+    {isMobile && <MobileHero />}
     <div
-      className="w-full h-screen bg-black overflow-hidden"
-      style={{ touchAction: "none", overscrollBehavior: "none" }}
+      className="w-full overflow-hidden"
+      style={{ height: 800 * layout.scale, display: isMobile ? "none" : undefined, touchAction: "none", overscrollBehavior: "none", backgroundColor: "#FFFBF2" }}
       onPointerDown={(e) => { touchStartY.current = e.clientY; }}
       onPointerUp={(e) => {
         const dy = touchStartY.current - e.clientY;
@@ -350,5 +378,17 @@ export default function App() {
 
       </div>
     </div>
+    <ScaleToFit>
+      <Section2 />
+      <Section3 />
+      <Section4 />
+      <Section5 />
+      <Section6 />
+      <Section7 />
+      <Section8 />
+      <Section9 />
+      <Section10 />
+    </ScaleToFit>
+    </>
   );
 }
