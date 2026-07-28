@@ -9,7 +9,6 @@ import Section7 from "./Section7";
 import Section8 from "./Section8";
 import Section9 from "./Section9";
 import Section10 from "./Section10";
-import ScaleToFit from "./ScaleToFit";
 import MobileHero from "./MobileHero";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
@@ -130,7 +129,7 @@ export default function App() {
 
   useEffect(() => {
     const calc = () => {
-      const s = window.innerWidth / 1440;   // scale the fixed 1440 design uniformly to the viewport width → exact Figma alignment, no side boxes
+      const s = window.innerWidth / 1440;   // scale the fixed 1440 design uniformly to the viewport width → always fits the window, never overflows
       setLayout({ scale: s, ox: 0, oy: 0 });
       setIsMobile(window.innerWidth < 640);   // phones get a dedicated portrait hero instead of the shrunk desktop one
     };
@@ -200,23 +199,23 @@ export default function App() {
   return (
     <>
     {isMobile && <MobileHero />}
-    <div
-      className="w-full overflow-hidden"
-      style={{ height: 800 * layout.scale, display: isMobile ? "none" : undefined, touchAction: "none", overscrollBehavior: "none", backgroundColor: "#FFFBF2" }}
-      onPointerDown={(e) => { touchStartY.current = e.clientY; }}
-      onPointerUp={(e) => {
-        const dy = touchStartY.current - e.clientY;
-        if (Math.abs(dy) >= 30) go(dy > 0 ? 1 : -1);   // swipe up = next, down = previous
-      }}
-    >
+    {/* ONE zoom for the whole page = fit-to-width × user zoom (+/−). The hero and every
+        section live inside this single 1440-wide unit, so they always scale together and
+        stay perfectly aligned at any zoom level. */}
+    <div style={{ width: 1440, margin: "0 auto", zoom: layout.scale }}>
+      {!isMobile && (
+      <div
+        className="overflow-hidden"
+        style={{ position: "relative", width: 1440, height: 800, touchAction: "none", overscrollBehavior: "none", backgroundColor: "#FFFBF2" }}
+        onPointerDown={(e) => { touchStartY.current = e.clientY; }}
+        onPointerUp={(e) => {
+          const dy = touchStartY.current - e.clientY;
+          if (Math.abs(dy) >= 30) go(dy > 0 ? 1 : -1);   // swipe up = next, down = previous
+        }}
+      >
       <div
         className="absolute overflow-hidden"
-        style={{
-          width: 1440, height: 800,
-          transform: `scale(${layout.scale})`,
-          transformOrigin: "top left",
-          left: layout.ox, top: layout.oy,
-        }}
+        style={{ width: 1440, height: 800, left: 0, top: 0 }}
       >
         {/* ── Background — white base; slides 3 & 4 add solid purple underneath ── */}
         <div className="absolute inset-0 bg-white" />
@@ -377,8 +376,8 @@ export default function App() {
         </motion.div>
 
       </div>
-    </div>
-    <ScaleToFit>
+      </div>
+      )}
       <Section2 />
       <Section3 />
       <Section4 />
@@ -388,7 +387,7 @@ export default function App() {
       <Section8 />
       <Section9 />
       <Section10 />
-    </ScaleToFit>
+    </div>
     </>
   );
 }

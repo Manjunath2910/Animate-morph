@@ -8,10 +8,16 @@ export default function ScaleToFit({ children, width = 1440 }: { children: React
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
+    let lastDPR = window.devicePixelRatio;
     const recalc = () => setZoom(window.innerWidth / width);
     recalc();
-    window.addEventListener("resize", recalc);
-    return () => window.removeEventListener("resize", recalc);
+    const onResize = () => {
+      // Ignore Ctrl +/- browser zoom (it changes devicePixelRatio) so the page magnifies normally instead of re-fitting to width.
+      if (window.devicePixelRatio !== lastDPR) { lastDPR = window.devicePixelRatio; return; }
+      recalc();
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [width]);
 
   return <div style={{ zoom }}>{children}</div>;
