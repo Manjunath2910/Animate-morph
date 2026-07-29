@@ -62,15 +62,15 @@ export default function Section2() {
   const numBase: React.CSSProperties = {
     position: "absolute",
     left: 690,
-    width: 465, // right edge at 1155 — clears the box's pill-shaped right curve so the number sits comfortably inside
+    width: 448, // right edge at 1138 — right-aligned, tucked further inside the box
     height: 80,
     background: "transparent",
-    color: "#454545",
+    color: "#454343",
     fontFamily: NUM_FONT,
     fontWeight: 500,
-    fontSize: 28,
+    fontSize: 29,
     lineHeight: "80px",
-    textAlign: "center",
+    textAlign: "right",
     boxSizing: "border-box",
     overflow: "hidden",         // never let a long value spill past the box
     whiteSpace: "nowrap",
