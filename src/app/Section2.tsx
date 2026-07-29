@@ -115,10 +115,10 @@ export default function Section2() {
         <div
           style={{
             position: "absolute",
-            left: 905,
-            top: 74,
-            width: 68,
-            height: 32,
+            left: 903,
+            top: 77,
+            width: 70,
+            height: 30,
             background: "#FFF2FE",
             display: "flex",
             alignItems: "center",
@@ -126,7 +126,7 @@ export default function Section2() {
             color: "#750558",
             fontFamily: NUM_FONT,
             fontWeight: 700,
-            fontSize: 16,
+            fontSize: 15.5,
             lineHeight: 1,
           }}
         >
