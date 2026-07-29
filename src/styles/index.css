@@ -1,3 +1,10 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Cap the page at its native width and letterbox the leftover space on wider
+   screens with solid black boxes on the left and right. */
+html, body, #root {
+  margin: 0;
+  background-color: #000000;
+}

@@ -1,25 +1,37 @@
 import { useState, useEffect } from "react";
-import bg from "@/imports/section4/bg_live5.png";
+import bgPhoto from "@/imports/section4/bg_photo.png";
+import logoZolt from "@/imports/section4/logo_zolt.png";
+import logoWise from "@/imports/section4/logo_wise.png";
+import logoRemitly from "@/imports/section4/logo_remitly.png";
+import logoIcici from "@/imports/section4/logo_icici.png";
 
-// ─── Section 4 — live GBP→INR comparison table ────────────────────────────────
-// The blue background, heading, card frame, logos and fees stay as the (cleaned)
-// image; we overlay the live exchange rates, recipient amounts, savings and timestamp.
+// ─── Section 4 — live £1,000 comparison table (rebuilt fully in HTML) ──────────
+// Figma frame 2147227851 (1440×850). Building photo background, white heading,
+// a frosted glass card (920×498, centered) holding the comparison table. Only the
+// exchange rates, fees, recipient amounts, savings and timestamp are live; they
+// refresh every 10 seconds.
 const CW = 1440;
-const CH = 850; // 2880×1700 → displayed at 1440 wide
-const AMT = 1000; // £1,000 basis, matching the header
+const CH = 850;
+const AMT = 1000; // £1,000 basis
 const FONT = "'Plus Jakarta Sans', sans-serif";
+const CREAM = "#F6F3EB";
+const GREY = "#9d8797";
+const PLUM = "#4E1E42";
 
 const WISE_URL = "http://localhost:3001/rate?source=GBP&target=INR";
 const FREE_URL = "https://open.er-api.com/v6/latest/GBP";
 const pickRate = (d: any): number | undefined => d?.rate ?? d?.[0]?.rate ?? d?.rates?.INR;
 const inr = (n: number) => "₹" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// 4 grid columns shared by the header + every row so everything lines up.
+const COLS = "232px 176px 150px 1fr";
+
 export default function Section4() {
-  const [R, setR] = useState(127.15); // live GBP→INR; design fallback
-  const [now, setNow] = useState(() => new Date()); // live clock for the timestamp
+  const [R, setR] = useState(127.15); // live GBP→INR
+  const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 1000); // keep time/date current (ticks every second)
+    const id = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(id);
   }, []);
 
@@ -30,65 +42,94 @@ export default function Section4() {
       fetch(WISE_URL).then((r) => r.json()).then((d) => { if (!apply(d)) throw new Error("no wise"); })
         .catch(() => fetch(FREE_URL).then((r) => r.json()).then(apply).catch(() => {}));
     load();
-    const id = window.setInterval(load, 10 * 1000); // refresh prices every 10 seconds
+    const id = window.setInterval(load, 10 * 1000); // refresh every 10s
     const onVis = () => { if (document.visibilityState === "visible") load(); };
     document.addEventListener("visibilitychange", onVis);
     return () => { ok = false; window.clearInterval(id); document.removeEventListener("visibilitychange", onVis); };
   }, []);
 
-  // Provider rates keep the design's spread around the live mid-market rate; fees are fixed.
-  // Small live-market fluctuation that changes every 10s (driven by the 1s clock tick),
-  // so the prices visibly move even when the underlying rate is momentarily flat.
+  // Small deterministic ±0.06% wiggle each 10s window so prices visibly move.
   const bucket = Math.floor(now.getTime() / 10000);
-  const pseudo = ((Math.sin(bucket * 127.13) * 43758.5453) % 1 + 1) % 1; // deterministic 0..1 per 10s window
-  const Rj = R * (1 + (pseudo - 0.5) * 0.0012); // ±0.06%
+  const pseudo = ((Math.sin(bucket * 127.13) * 43758.5453) % 1 + 1) % 1;
+  const Rj = R * (1 + (pseudo - 0.5) * 0.0012);
 
   const rows = [
-    { rate: Rj, fee: 3, zolt: true },
-    { rate: Rj + 0.01, fee: 5.21 },
-    { rate: Rj + 0.01, fee: 5.21 },
-    { rate: Rj - 0.67, fee: 1 },
+    { logo: logoZolt, h: 26, rate: Rj, fee: 3, zolt: true },
+    { logo: logoWise, h: 22, rate: Rj + 0.01, fee: 5.21 },
+    { logo: logoRemitly, h: 26, rate: Rj + 0.01, fee: 5.21 },
+    { logo: logoIcici, h: 22, rate: Rj - 0.67, fee: 1 },
   ].map((r) => ({ ...r, recv: (AMT - r.fee) * r.rate }));
   const save = rows[0].recv - Math.max(rows[1].recv, rows[2].recv, rows[3].recv);
 
-  const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
+  // Current local time, in the design's "Last updated at 05:24 PM · 03.07.26" format.
+  let h = now.getHours();
+  const ap = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  const time = `${String(h).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} ${ap}`;
   const dd = String(now.getDate()).padStart(2, "0");
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const yy = String(now.getFullYear()).slice(2);
   const ts = `Last updated at ${time} · ${dd}.${mm}.${yy}`;
 
-  const rateY = [440, 525, 600, 675];
-  const recvY = [418, 525, 600, 675];
-
-  const rateCell = (y: number, white: boolean): React.CSSProperties => ({
-    position: "absolute", left: 546, width: 200, top: y - 20, height: 40, lineHeight: "40px",
-    textAlign: "center", fontFamily: FONT, fontSize: 24, fontWeight: 500, color: white ? "#ffffff" : "#9d8797",
-  });
-  const recvCell = (y: number, white: boolean): React.CSSProperties => ({
-    position: "absolute", right: 338, width: 340, top: y - 22, height: 44, lineHeight: "44px",
-    textAlign: "right", fontFamily: FONT, fontSize: 29, fontWeight: 700, color: white ? "#ffffff" : "#502144",
-  });
+  const headCell = (align: string): React.CSSProperties => ({ fontFamily: FONT, fontSize: 16, fontWeight: 500, color: GREY, textAlign: align as any });
+  const rateCell = (white: boolean): React.CSSProperties => ({ fontFamily: FONT, fontSize: 21, fontWeight: 500, color: white ? "#fff" : GREY, textAlign: "center" });
+  const recvCell = (white: boolean): React.CSSProperties => ({ fontFamily: FONT, fontSize: 22, fontWeight: 700, color: white ? "#fff" : PLUM, textAlign: "right" });
 
   return (
     <section style={{ width: "100%", backgroundColor: "#FFFBF2", overflow: "hidden" }}>
       <div style={{ position: "relative", width: CW, height: CH, margin: "0 auto" }}>
-        <img src={bg} alt="Sending money home should feel as easy as sending a message" style={{ width: CW, height: CH, display: "block" }} />
+        <img src={bgPhoto} alt="" style={{ position: "absolute", inset: 0, width: CW, height: CH, objectFit: "cover" }} />
 
-        {rows.map((r, i) => (
-          <div key={i}>
-            <div style={rateCell(rateY[i], !!r.zolt)}>{r.rate.toFixed(2)}</div>
-            <div style={recvCell(recvY[i], !!r.zolt)}>{inr(r.recv)}</div>
-          </div>
-        ))}
-
-        {/* ZoltMoney savings badge */}
-        <div style={{ position: "absolute", right: 338, width: 340, top: 446, height: 32, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 5, fontFamily: FONT, fontSize: 19, fontWeight: 600, color: "#ffffff" }}>
-          <span style={{ color: "#3fe07a", fontSize: 13 }}>▲</span> Save {inr(save)}
+        {/* Heading */}
+        <div style={{ position: "absolute", left: 150, top: 96, width: 1140, textAlign: "center", fontFamily: FONT, fontSize: 40, fontWeight: 700, lineHeight: 1.35, color: "#fff", letterSpacing: "-0.01em" }}>
+          Sending money home should feel as<br />easy as sending a message.
         </div>
 
-        {/* Last updated timestamp */}
-        <div style={{ position: "absolute", left: 420, width: 600, top: 716, height: 34, lineHeight: "34px", textAlign: "center", fontFamily: FONT, fontSize: 18, fontWeight: 400, color: "#9d8797" }}>
-          {ts}
+        {/* Frosted comparison card */}
+        <div style={{ position: "absolute", left: 260, top: 268, width: 920, minHeight: 498, borderRadius: 24, border: "1px solid #FFFFFF", padding: "24px 40px", boxSizing: "border-box", background: "linear-gradient(0deg, rgba(153,153,153,0.21) 0%, rgba(0,0,0,0.21) 100%)", backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)", display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Title */}
+          <div style={{ textAlign: "center", fontFamily: FONT, fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.01em" }}>
+            Here's how much £1,000 gets you with ZoltMoney
+          </div>
+
+          {/* Inner light panel */}
+          <div style={{ background: CREAM, borderRadius: 20, padding: "14px 0", display: "flex", flexDirection: "column" }}>
+            {/* Column headers */}
+            <div style={{ display: "grid", gridTemplateColumns: COLS, alignItems: "center", padding: "6px 28px 14px" }}>
+              <div style={headCell("left")}>Provider</div>
+              <div style={headCell("center")}>Exchange rate</div>
+              <div style={headCell("center")}>Transfer fee</div>
+              <div style={headCell("right")}>Recipient gets</div>
+            </div>
+
+            {/* Rows */}
+            {rows.map((r, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "grid", gridTemplateColumns: COLS, alignItems: "center",
+                  minHeight: 74, margin: r.zolt ? "0 14px" : "0", padding: r.zolt ? "0 14px" : "0 28px",
+                  borderRadius: r.zolt ? 16 : 0,
+                  background: r.zolt ? "linear-gradient(90deg, #7C0E5F 0%, #630B4B 100%)" : "transparent",
+                }}
+              >
+                <img src={r.logo} alt="" style={{ height: r.h, width: "auto", objectFit: "contain", justifySelf: "start" }} />
+                <div style={rateCell(!!r.zolt)}>{r.rate.toFixed(2)}</div>
+                <div style={rateCell(!!r.zolt)}>{"$" + (r.fee % 1 === 0 ? r.fee : r.fee.toFixed(2))}</div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={recvCell(!!r.zolt)}>{inr(r.recv)}</div>
+                  {r.zolt && (
+                    <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 600, color: "#3fe07a", marginTop: 2 }}>
+                      ▲ <span style={{ color: "#fff" }}>Save {inr(save)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Timestamp */}
+          <div style={{ textAlign: "center", fontFamily: FONT, fontSize: 15, fontWeight: 400, color: "#8a8290" }}>{ts}</div>
         </div>
       </div>
     </section>

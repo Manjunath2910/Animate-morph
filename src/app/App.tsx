@@ -145,9 +145,10 @@ export default function App() {
 
   useEffect(() => {
     const calc = () => {
-      const s = window.innerWidth / 1440;   // scale the fixed 1440 design uniformly to the viewport width → always fits the window, never overflows
+      const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
+      const s = Math.min(cw / 1440, 1);   // scale DOWN to fit narrow screens, but never UP past the native 1440 design → wide screens get black side boxes instead of a stretched page
       setLayout({ scale: s, ox: 0, oy: 0 });
-      setIsMobile(window.innerWidth < 640);   // phones get a dedicated portrait hero instead of the shrunk desktop one
+      setIsMobile(cw < 640);   // phones get a dedicated portrait hero instead of the shrunk desktop one
     };
     calc();
     window.addEventListener("resize", calc);
