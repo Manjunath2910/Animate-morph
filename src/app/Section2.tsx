@@ -118,7 +118,7 @@ export default function Section2() {
             left: 905,
             top: 74,
             width: 68,
-            height: 32.5,
+            height: 32,
             background: "#FFF2FE",
             display: "flex",
             alignItems: "center",
