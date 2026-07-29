@@ -10,6 +10,7 @@ import Section8 from "./Section8";
 import Section9 from "./Section9";
 import Section10 from "./Section10";
 import MobileHero from "./MobileHero";
+import ScaleToFit from "./ScaleToFit";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
 import imgPremiumPhoto from "@/imports/Component9-1/16a8882261213fd28e74883e457af281e75a728f.png";
@@ -126,6 +127,21 @@ export default function App() {
   const [slide, setSlide] = useState<Slide>(1);
   const [layout, setLayout] = useState({ scale: 1, ox: 0, oy: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [userZoom, setUserZoom] = useState(1);
+
+  // Press + / - (or =) to zoom the whole page in and out; 0 resets. Applied as one scale on
+  // the page wrapper, so every section scales together and stays perfectly aligned.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.key === "+" || e.key === "=") { e.preventDefault(); setUserZoom((z) => Math.min(3, Math.round((z + 0.1) * 100) / 100)); }
+      else if (e.key === "-" || e.key === "_") { e.preventDefault(); setUserZoom((z) => Math.max(0.3, Math.round((z - 0.1) * 100) / 100)); }
+      else if (e.key === "0") { e.preventDefault(); setUserZoom(1); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     const calc = () => {
@@ -199,10 +215,9 @@ export default function App() {
   return (
     <>
     {isMobile && <MobileHero />}
-    {/* ONE zoom for the whole page = fit-to-width × user zoom (+/−). The hero and every
-        section live inside this single 1440-wide unit, so they always scale together and
-        stay perfectly aligned at any zoom level. */}
-    <div style={{ width: 1440, margin: "0 auto", zoom: layout.scale }}>
+    {/* Scale the whole 1440 design to the viewport width (transform-based, iOS-safe) so the
+        hero and every section scale together and stay aligned on any screen including iPhone. */}
+    <ScaleToFit scale={layout.scale * userZoom}>
       {!isMobile && (
       <div
         className="overflow-hidden"
@@ -387,7 +402,7 @@ export default function App() {
       <Section8 />
       <Section9 />
       <Section10 />
-    </div>
+    </ScaleToFit>
     </>
   );
 }
