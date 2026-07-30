@@ -356,14 +356,30 @@ export default function App() {
           animate={{ opacity: slide >= 3 ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Zolt logo icon — magenta shield (flat rounded top) + white lightning bolt */}
+          {/* Zolt Assurance logo — glossy 3D magenta shield (light-pink rim + silver lightning bolt) */}
           <div style={{ width: 30, height: 30, position: "relative", flexShrink: 0 }}>
-            <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
-              <path
-                d="M9 3 H23 C25 3 26.5 4.5 26.5 6.5 V15 C26.5 22 21.5 27 16 29.5 C10.5 27 5.5 22 5.5 15 V6.5 C5.5 4.5 7 3 9 3 Z"
-                fill="#CA119A"
-              />
-              <path d="M18 7.5 L9.8 18 H14.6 L13.4 24.5 L22.2 13.5 H17.2 Z" fill="#ffffff" />
+            <svg width="30" height="30" viewBox="0 0 94 93" fill="none">
+              <defs>
+                <linearGradient id="zaBody" x1="24" y1="10" x2="70" y2="84" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#EA00A2" />
+                  <stop offset="1" stopColor="#BF0088" />
+                </linearGradient>
+                <linearGradient id="zaBolt" x1="36" y1="24" x2="58" y2="70" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#FFFFFF" />
+                  <stop offset="1" stopColor="#D9D9D9" />
+                </linearGradient>
+                <filter id="zaSh" x="-25%" y="-20%" width="150%" height="155%">
+                  <feDropShadow dx="2" dy="5" stdDeviation="4" floodColor="#5f4458" floodOpacity="0.38" />
+                </filter>
+              </defs>
+              <g filter="url(#zaSh)">
+                {/* light-pink rim */}
+                <path d="M21 7 H73 Q81 7 81 15 V45 Q81 71 47 88 Q13 71 13 45 V15 Q13 7 21 7 Z" fill="#F2ABDE" />
+                {/* magenta body */}
+                <path d="M25 14 H69 Q75 14 75 20 V45 Q75 66 47 80 Q19 66 19 45 V20 Q19 14 25 14 Z" fill="url(#zaBody)" />
+                {/* lightning bolt */}
+                <path d="M52.9 22 L28.8 52.9 H42.9 L39.4 72 L65.2 39.7 H50.5 Z" fill="url(#zaBolt)" />
+              </g>
             </svg>
           </div>
           <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#ffffff", whiteSpace: "nowrap", lineHeight: "29.335px" }}>
