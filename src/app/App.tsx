@@ -9,7 +9,6 @@ import Section7 from "./Section7";
 import Section8 from "./Section8";
 import Section9 from "./Section9";
 import Section10 from "./Section10";
-import MobileHero from "./MobileHero";
 import ScaleToFit from "./ScaleToFit";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
@@ -126,7 +125,6 @@ function PhoneFrame({
 export default function App() {
   const [slide, setSlide] = useState<Slide>(1);
   const [layout, setLayout] = useState({ scale: 1, ox: 0, oy: 0 });
-  const [isMobile, setIsMobile] = useState(false);
   const [userZoom, setUserZoom] = useState(1);
 
   // Press + / - (or =) to zoom the whole page in and out; 0 resets. Applied as one scale on
@@ -146,41 +144,29 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      const s = Math.min(cw / 1440, 1);   // scale DOWN to fit narrow screens, but never UP past the native 1440 design → wide screens get black side boxes instead of a stretched page
+      const gutter = cw > 1440 ? 56 : 0;   // on big screens leave a small black margin on each side; smaller screens fill fully
+      const s = (cw - gutter * 2) / 1440;   // scale the design to fill the width minus those small side gutters
       setLayout({ scale: s, ox: 0, oy: 0 });
-      setIsMobile(cw < 640);   // phones get a dedicated portrait hero instead of the shrunk desktop one
     };
     calc();
     window.addEventListener("resize", calc);
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  // Move between frames (throttled). dir 1 = next, -1 = previous.
-  const lastAct = useRef(0);
-  const touchStartY = useRef(0);
+  // Scroll DOWN scrolls the whole page normally. Scroll UP while at the very top plays
+  // the Section 1 transition (advances the hero frames) instead of scrolling up.
   const prevSlide = useRef<Slide>(1);
-  const go = (dir: 1 | -1) => {
-    const now = Date.now();
-    if (now - lastAct.current < 380) return;   // throttle: one gesture = one frame
-    const cur = prevSlide.current;
-    const next = Math.min(3, Math.max(1, cur + dir)) as Slide;   // clamp — no wrap, so we can hand off to the page
-    if (next === cur) return;
-    lastAct.current = now;
-    setSlide(next);
-  };
-
-  // Desktop wheel: the hero pins & swaps frames until the last one, then releases so the page
-  // scrolls normally into Section 2 (and re-captures when you scroll back up to the top).
+  const lastAct = useRef(0);
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
-      if (window.innerWidth < 640) return;   // no scroll-jack on phones — the mobile hero scrolls normally
-      if (Math.abs(e.deltaY) < 4) return;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const cur = prevSlide.current;
-      const atTop = window.scrollY <= 1;
-      if (dir === 1 && cur < 3) { e.preventDefault(); go(1); return; }          // advance frames, stay pinned
-      if (dir === -1 && atTop && cur > 1) { e.preventDefault(); go(-1); return; } // step back frames at the top
-      // otherwise: let the page scroll (down into Section 2, or up back to the hero)
+      if (window.innerWidth < 640) return;        // phones scroll normally
+      if (e.deltaY >= 0) return;                  // scrolling down → let the whole page scroll
+      if (window.scrollY > 2) return;             // only at the very top; higher up, scroll up normally
+      e.preventDefault();                         // at the top an upward scroll drives the transition
+      const now = Date.now();
+      if (now - lastAct.current < 500) return;    // one frame per gesture
+      lastAct.current = now;
+      setSlide((s) => ((s >= 3 ? 1 : s + 1) as Slide));
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
@@ -215,19 +201,13 @@ export default function App() {
 
   return (
     <>
-    {isMobile && <MobileHero />}
     {/* Scale the whole 1440 design to the viewport width (transform-based, iOS-safe) so the
-        hero and every section scale together and stay aligned on any screen including iPhone. */}
+        hero and every section scale together and stay aligned on any screen including iPhone —
+        the mobile hero is the same full desktop design, just scaled down like every other section. */}
     <ScaleToFit scale={layout.scale * userZoom}>
-      {!isMobile && (
       <div
         className="overflow-hidden"
-        style={{ position: "relative", width: 1440, height: 800, touchAction: "none", overscrollBehavior: "none", backgroundColor: "#FFFBF2" }}
-        onPointerDown={(e) => { touchStartY.current = e.clientY; }}
-        onPointerUp={(e) => {
-          const dy = touchStartY.current - e.clientY;
-          if (Math.abs(dy) >= 30) go(dy > 0 ? 1 : -1);   // swipe up = next, down = previous
-        }}
+        style={{ position: "relative", width: 1440, height: 800, backgroundColor: "#FFFBF2" }}
       >
       <div
         className="absolute overflow-hidden"
@@ -393,7 +373,6 @@ export default function App() {
 
       </div>
       </div>
-      )}
       <Section2 />
       <Section3 />
       <Section4 />

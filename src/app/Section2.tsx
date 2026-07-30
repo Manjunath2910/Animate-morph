@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import couple from "@/imports/section2/couple.png";
+import couple from "@/imports/section2/couple_blur.png";
 import flagUs from "@/imports/section2/flag_us.png";
 import flagIn from "@/imports/section2/flag_india.png";
 import remitlyLogo from "@/imports/section2/remitly_logo.png";
@@ -101,6 +101,9 @@ export default function Section2() {
       <div style={{ position: "relative", width: CARD_W, height: CARD_H, borderRadius: 24, overflow: "hidden" }}>
         {/* Photo fills the entire card */}
         <img src={couple} alt="A couple checking their phone" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 22%" }} />
+
+        {/* The frosted blur + dark gradient behind the headline is baked into couple_blur.png,
+            so it renders identically at any scale (matches the Figma exactly). */}
 
         {/* Headline on the photo */}
         <div style={{ position: "absolute", left: 30, top: 442, fontFamily: FONT, fontSize: 42, fontWeight: 700, lineHeight: 1.18, color: "#fff", letterSpacing: "-0.01em" }}>

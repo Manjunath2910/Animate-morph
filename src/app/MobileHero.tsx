@@ -10,7 +10,8 @@ export default function MobileHero() {
         position: "relative",
         width: "100%",
         height: "100svh",
-        minHeight: 560,
+        minHeight: 600,
+        maxHeight: 900,
         overflow: "hidden",
         backgroundColor: "#3F0831",
       }}
@@ -40,7 +41,7 @@ export default function MobileHero() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "18px 20px",
+          padding: "calc(16px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) 16px calc(20px + env(safe-area-inset-left))",
         }}
       >
         <span style={{ fontFamily: font, fontWeight: 800, fontSize: 22, color: "#fff", letterSpacing: "-0.01em" }}>
@@ -64,7 +65,7 @@ export default function MobileHero() {
       </div>
 
       {/* Headline */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 22px 40px" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 calc(22px + env(safe-area-inset-left)) calc(36px + env(safe-area-inset-bottom)) calc(22px + env(safe-area-inset-right))" }}>
         <h1
           style={{
             fontFamily: font,
