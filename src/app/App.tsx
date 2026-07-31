@@ -272,7 +272,7 @@ export default function App() {
           <div className="flex items-center shrink-0" style={{ gap: 48 }}>
             {/* Logo + brand label */}
             <div className="flex items-center shrink-0">
-              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 30, width: "auto", flexShrink: 0, marginRight: 8 }} />
+              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 27, width: "auto", flexShrink: 0, marginRight: 10 }} />
               <motion.p
                 className="shrink-0 whitespace-nowrap"
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}
