@@ -11,6 +11,8 @@ import Section9 from "./Section9";
 import Section10 from "./Section10";
 import ScaleToFit from "./ScaleToFit";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
+import zoltLogoWhite from "@/imports/section2/zoltmoney_white.png";
+import zoltLogoMagenta from "@/imports/section2/zoltmoney_magenta.png";
 import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
 import imgPremiumPhoto from "@/imports/Component9-1/16a8882261213fd28e74883e457af281e75a728f.png";
 import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4f715e6.png";
@@ -270,7 +272,7 @@ export default function App() {
           <div className="flex items-center shrink-0" style={{ gap: 48 }}>
             {/* Logo + brand label */}
             <div className="flex items-center shrink-0">
-              <PandaLogo fill={logoFill} />
+              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 30, width: "auto", flexShrink: 0, marginRight: 8 }} />
               <motion.p
                 className="shrink-0 whitespace-nowrap"
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}
