@@ -17,8 +17,8 @@ import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4
 
 type Slide = 1 | 2 | 3;
 
-const DUR = 0.85;
-const EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
+const DUR = 0.8;
+const EASE: [number, number, number, number] = [0.45, 0, 0.15, 1]; // smooth glide (gentle ease-in-out)
 const T = { duration: DUR, ease: EASE };
 
 // ─── Panda Money logo ─────────────────────────────────────────────────────────
@@ -153,23 +153,27 @@ export default function App() {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  // Scroll DOWN scrolls the whole page normally. Scroll UP while at the very top plays
-  // the Section 1 transition (advances the hero frames) instead of scrolling up.
+  // Revolut-style: the whole page scrolls normally (never trapped). As Section 1 scrolls,
+  // the scroll position drives the hero frames forward (scroll down) / backward (scroll up).
   const prevSlide = useRef<Slide>(1);
-  const lastAct = useRef(0);
+  const heroRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const onWheel = (e: WheelEvent) => {
-      if (window.innerWidth < 640) return;        // phones scroll normally
-      if (e.deltaY >= 0) return;                  // scrolling down → let the whole page scroll
-      if (window.scrollY > 2) return;             // only at the very top; higher up, scroll up normally
-      e.preventDefault();                         // at the top an upward scroll drives the transition
-      const now = Date.now();
-      if (now - lastAct.current < 500) return;    // one frame per gesture
-      lastAct.current = now;
-      setSlide((s) => ((s >= 3 ? 1 : s + 1) as Slide));
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const hero = heroRef.current;
+        if (!hero) return;
+        const r = hero.getBoundingClientRect();
+        const y = Math.max(0, -r.top);   // pixels scrolled past the top of Section 1
+        // A small scroll already animates: frame 2 kicks in early, frame 3 shortly after.
+        setSlide((y < 70 ? 1 : y < 180 ? 2 : 3) as Slide);
+      });
     };
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onWheel);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    onScroll();
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); cancelAnimationFrame(raf); };
   }, []);
 
   const isPurple = slide >= 3;
@@ -186,11 +190,9 @@ export default function App() {
   const maskD    = slide <= 2 ? svgPaths.p32a00 : svgPaths.p3aa52400;
   const maskFill = slide === 3 ? "#750558" : "#ffffff";
 
-  // Frame 1 ⇆ 2 uses a slow, gentle cross-fade (no shrink); frames 2 ⇆ 3 keep the normal morph speed.
+  // All frame transitions use the same smooth, gentle glide so the motion feels continuous on scroll.
   const involvesHero = slide === 1 || prevSlide.current === 1;
-  const T = involvesHero
-    ? { duration: DUR, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }
-    : { duration: DUR, ease: EASE };
+  const T = { duration: involvesHero ? DUR : DUR * 0.9, ease: EASE };
   // Cards fan out only when arriving on frame 3; when leaving they disappear instantly (no reverse-shrink).
   const cardT = { duration: slide === 3 ? DUR : 0, ease: EASE };
   useEffect(() => { prevSlide.current = slide; }, [slide]);
@@ -206,6 +208,7 @@ export default function App() {
         the mobile hero is the same full desktop design, just scaled down like every other section. */}
     <ScaleToFit scale={layout.scale * userZoom}>
       <div
+        ref={heroRef}
         className="overflow-hidden"
         style={{ position: "relative", width: 1440, height: 800, backgroundColor: "#FFFBF2" }}
       >
