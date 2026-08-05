@@ -27,8 +27,9 @@ export default function Section6() {
         </p>
       </div>
 
-      {/* Three-card row */}
-      <div style={{ maxWidth: 1180, margin: "24px auto 0", padding: "0 24px", boxSizing: "border-box" }}>
+      {/* Three-card row — spans the full 1440 section width (cream side margins are baked
+          into the image, matching the section background). */}
+      <div style={{ width: "100%", margin: "24px auto 0" }}>
         <img src={cards} alt="Spend anywhere, Smarter currency conversion, Everyday payments" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
     </section>

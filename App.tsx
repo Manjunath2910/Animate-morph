@@ -247,7 +247,7 @@ export default function App() {
               <PandaLogo fill={logoFill} />
               <motion.p
                 className="shrink-0 whitespace-nowrap"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}
                 animate={{ color: logoFill }}
                 transition={T}
               >
@@ -257,7 +257,7 @@ export default function App() {
             {/* Nav links */}
             <motion.div
               className="flex items-center shrink-0"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500, fontSize: 16, lineHeight: "27.842px", gap: 24, color: linkColor }}
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400, fontSize: 16, lineHeight: "27.842px", gap: 24, color: linkColor }}
               animate={{ color: linkColor }}
               transition={T}
             >

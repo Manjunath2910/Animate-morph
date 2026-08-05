@@ -19,7 +19,7 @@ import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4
 
 type Slide = 1 | 2 | 3;
 
-const DUR = 0.8;
+const DUR = 0.72;
 const EASE: [number, number, number, number] = [0.45, 0, 0.15, 1]; // smooth glide (gentle ease-in-out)
 const T = { duration: DUR, ease: EASE };
 
@@ -146,7 +146,7 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      const gutter = cw > 1440 ? 56 : 0;   // on big screens leave a small black margin on each side; smaller screens fill fully
+      const gutter = 0;   // no side letterbox — sections fill the full width on every screen
       const s = (cw - gutter * 2) / 1440;   // scale the design to fill the width minus those small side gutters
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
@@ -155,27 +155,54 @@ export default function App() {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  // Revolut-style: the whole page scrolls normally (never trapped). As Section 1 scrolls,
-  // the scroll position drives the hero frames forward (scroll down) / backward (scroll up).
+  // One scroll = one frame, with the smooth morph the user approved. Each scroll notch
+  // advances a single frame (1→2→3 going down, 3→2→1 going back up at the top), holding
+  // the page in place until the frames are done; only then does the page scroll on to the
+  // next section. The morph itself still plays over the smooth DUR glide.
   const prevSlide = useRef<Slide>(1);
   const heroRef = useRef<HTMLDivElement>(null);
+  const slideRef = useRef<Slide>(1);
+  const lockRef = useRef(false);
+  useEffect(() => { slideRef.current = slide; }, [slide]);
   useEffect(() => {
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const hero = heroRef.current;
-        if (!hero) return;
-        const r = hero.getBoundingClientRect();
-        const y = Math.max(0, -r.top);   // pixels scrolled past the top of Section 1
-        // A small scroll already animates: frame 2 kicks in early, frame 3 shortly after.
-        setSlide((y < 70 ? 1 : y < 180 ? 2 : 3) as Slide);
-      });
+    const LOCK_MS = DUR * 1000 + 150;   // one step per scroll: ignore extra scroll until the morph finishes
+    const step = (dir: 1 | -1) => {
+      if (lockRef.current) return false;
+      const s = slideRef.current;
+      const next = Math.min(3, Math.max(1, s + dir)) as Slide;
+      if (next === s) return false;
+      lockRef.current = true;
+      setSlide(next);
+      window.setTimeout(() => { lockRef.current = false; }, LOCK_MS);
+      return true;
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    onScroll();
-    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); cancelAnimationFrame(raf); };
+    const onWheel = (e: WheelEvent) => {
+      const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
+      const s = slideRef.current;
+      const atTop = window.scrollY <= 1;
+      if (dir === 1 && s < 3) { e.preventDefault(); step(1); }              // scroll down → next frame, hold page
+      else if (dir === -1 && s > 1 && atTop) { e.preventDefault(); step(-1); } // scroll up at top → previous frame
+      // else: let the page scroll normally (down once on frame 3, up when already on frame 1)
+    };
+    // Touch: swipe up = next frame, swipe down = previous frame (same one-step behaviour).
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => { touchY = e.touches[0].clientY; };
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = touchY - e.touches[0].clientY;   // >0 => swipe up => forward
+      if (Math.abs(dy) < 10) return;
+      const s = slideRef.current;
+      const atTop = window.scrollY <= 1;
+      if (dy > 0 && s < 3) { e.preventDefault(); if (step(1)) touchY = e.touches[0].clientY; }
+      else if (dy < 0 && s > 1 && atTop) { e.preventDefault(); if (step(-1)) touchY = e.touches[0].clientY; }
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
   }, []);
 
   const isPurple = slide >= 3;
@@ -194,9 +221,9 @@ export default function App() {
 
   // All frame transitions use the same smooth, gentle glide so the motion feels continuous on scroll.
   const involvesHero = slide === 1 || prevSlide.current === 1;
-  const T = { duration: involvesHero ? DUR : DUR * 0.9, ease: EASE };
+  const T = { duration: involvesHero ? DUR : DUR * 1.25, ease: EASE };
   // Cards fan out only when arriving on frame 3; when leaving they disappear instantly (no reverse-shrink).
-  const cardT = { duration: slide === 3 ? DUR : 0, ease: EASE };
+  const cardT = { duration: slide === 3 ? DUR * 1.25 : 0, ease: EASE };
   useEffect(() => { prevSlide.current = slide; }, [slide]);
 
   // Headline position: slides 3 & 4 move up to top
@@ -272,7 +299,7 @@ export default function App() {
           <div className="flex items-center shrink-0" style={{ gap: 48 }}>
             {/* Logo + brand label */}
             <div className="flex items-center shrink-0">
-              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 27, width: "auto", flexShrink: 0, marginRight: 10, display: "block", verticalAlign: "middle", transform: "translateY(-3px)" }} />
+              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 27, width: "auto", flexShrink: 0, marginRight: 10, display: "block", verticalAlign: "middle", transform: "translateY(-2px)" }} />
               <motion.p
                 className="shrink-0 whitespace-nowrap"
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}

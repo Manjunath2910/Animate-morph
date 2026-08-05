@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import couple from "@/imports/section2/couple_blur.png";
+import couple from "@/imports/section2/couple_v2.png";
 import flagUs from "@/imports/section2/flag_us.png";
 import flagIn from "@/imports/section2/flag_india.png";
 import remitlyLogo from "@/imports/section2/remitly_logo.png";
@@ -139,11 +139,17 @@ export default function Section2() {
     )
   );
 
+  // Exact Figma spec (Frame 2147227846): 1440×866 section, white background (design uses
+  // #FFFDF7 but the user wants pure white), with the 1200×688 card centered — 120px side
+  // margins and 89px top/bottom.
   return (
-    <section style={{ backgroundColor: "#FFFBF2", width: "100%", display: "flex", justifyContent: "center", alignItems: "center", padding: "80px 24px", boxSizing: "border-box" }}>
+    <section style={{ backgroundColor: "#ffffff", width: "100%", display: "flex", justifyContent: "center", alignItems: "center", padding: "89px 0", boxSizing: "border-box" }}>
       <div style={{ position: "relative", width: CARD_W, height: CARD_H, borderRadius: 24, overflow: "hidden" }}>
-        {/* Photo fills the entire card (frosted blur + gradient baked into the image) */}
-        <img src={couple} alt="A couple checking their phone" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 22%" }} />
+        {/* Photo positioned exactly as the Figma image fill (Scale: Crop):
+            1467.04×745.22 at left -231.13, top -65.24 inside the 1200×688 card. */}
+        <img src={couple} alt="A couple checking their phone" style={{ position: "absolute", width: 1467.04, height: 745.22, left: -231.13, top: -65.24, maxWidth: "none", objectFit: "cover", display: "block" }} />
+        {/* Dark gradient at the bottom for headline legibility (matches the Figma gradient overlay). */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,1,8,0) 46%, rgba(10,1,8,0.55) 100%)", pointerEvents: "none" }} />
 
         {/* Headline on the photo */}
         <div style={{ position: "absolute", left: 30, top: 442, fontFamily: FONT, fontSize: 42, fontWeight: 700, lineHeight: 1.18, color: "#fff", letterSpacing: "-0.01em" }}>

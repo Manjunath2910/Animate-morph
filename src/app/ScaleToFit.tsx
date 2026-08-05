@@ -23,7 +23,7 @@ export default function ScaleToFit({ scale, children }: { scale: number; childre
   // Outer takes the scaled size: at fit-scale it equals the viewport width; when zoomed in
   // it's wider (page scrolls sideways); when zoomed out it's narrower and centered.
   return (
-    <div style={{ width: 1440 * scale, height, margin: "0 auto", overflow: "hidden" }}>
+    <div style={{ width: 1440 * scale, height, margin: "0 auto", overflow: "hidden", backgroundColor: "#FFFBF2" }}>
       <div ref={inner} style={{ width: 1440, transformOrigin: "top left", transform: `scale(${scale})` }}>
         {children}
       </div>

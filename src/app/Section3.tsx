@@ -1,3 +1,5 @@
+import bankCircle from "@/imports/section3/bank_circle.png";
+
 // ─── Section 3 — "Why thousands are choosing Zolt" ────────────────────────────
 // Exact Figma values:
 //   Heading  : Plus Jakarta Sans 700, 48px, line-height 124%, colour #3F0831, centred
@@ -7,32 +9,15 @@ const PLUM = "#3F0831";
 const MAGENTA = "#750558";
 const CREAM = "#FFFBF2";
 const HEAD_FONT = "'Plus Jakarta Sans', sans-serif";
-// "GC North Sans" is the brand display font (not a free web font) — falls back to Plus Jakarta.
-const TITLE_FONT = "'GC North Sans', 'GC North Sans Display', 'Plus Jakarta Sans', sans-serif";
+// "GC North Sans Display" is the brand display font (proprietary — not on the site or the live
+// zoltmoney.com). Montserrat 800 is the closest free match (and the font the live site uses).
+// GC North Sans stays first so it wins automatically if the real font file is ever added.
+const TITLE_FONT = "'GC North Sans Display', 'GC North Sans', 'Montserrat', 'Plus Jakarta Sans', sans-serif";
 
-function BankIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-      <path d="M12 3 L21 8 L3 8 Z" fill="#fff" />
-      <rect x="5" y="9.2" width="2" height="6.6" fill="#fff" rx="0.4" />
-      <rect x="9" y="9.2" width="2" height="6.6" fill="#fff" rx="0.4" />
-      <rect x="13" y="9.2" width="2" height="6.6" fill="#fff" rx="0.4" />
-      <rect x="17" y="9.2" width="2" height="6.6" fill="#fff" rx="0.4" />
-      <rect x="3.5" y="16.6" width="17" height="2" fill="#fff" rx="0.6" />
-    </svg>
-  );
-}
-
+// Exact icon supplied from the Figma design (magenta circle + white bank icon, 68px).
 function IconCircle() {
   return (
-    <div
-      style={{
-        width: 52, height: 52, borderRadius: "50%", backgroundColor: MAGENTA,
-        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-      }}
-    >
-      <BankIcon />
-    </div>
+    <img src={bankCircle} alt="" width={68} height={68} style={{ display: "block", flexShrink: 0 }} />
   );
 }
 
@@ -88,7 +73,7 @@ export default function Section3() {
             bg="#F8EFE7"
             title={"One Account.\nOne App.\nOne Financial Experience."}
             footer={
-              <span style={{ fontFamily: HEAD_FONT, fontWeight: 500, fontSize: 15, color: PLUM, opacity: 0.75 }}>
+              <span style={{ fontFamily: HEAD_FONT, fontWeight: 500, fontSize: 16, color: "#000000" }}>
                 Beyond just transfers.
               </span>
             }
@@ -99,9 +84,9 @@ export default function Section3() {
             footer={
               <button
                 style={{
-                  backgroundColor: MAGENTA, color: "#fff", border: "none", borderRadius: 999,
-                  padding: "15px 34px", fontFamily: HEAD_FONT, fontWeight: 700, fontSize: 16,
-                  cursor: "pointer", width: "100%",
+                  backgroundColor: MAGENTA, color: "#FFF2FE", border: "none", borderRadius: 999,
+                  padding: "11.44px 22.88px", fontFamily: HEAD_FONT, fontWeight: 600, fontSize: 22.88,
+                  lineHeight: 1.3, cursor: "pointer", width: "100%",
                 }}
               >
                 Get Started
@@ -112,7 +97,7 @@ export default function Section3() {
             bg="#F8EFE7"
             title={"No Hidden Fees.\nNo Confusing Rates."}
             footer={
-              <span style={{ fontFamily: HEAD_FONT, fontWeight: 500, fontSize: 15, color: PLUM, opacity: 0.75 }}>
+              <span style={{ fontFamily: HEAD_FONT, fontWeight: 500, fontSize: 16, color: "#000000" }}>
                 Know exactly what you're paying for.
               </span>
             }
@@ -122,10 +107,11 @@ export default function Section3() {
 
       {/* Magenta stats band */}
       <div style={{ width: "100%", backgroundColor: MAGENTA }}>
+        {/* Figma: full-width band, 41px top/bottom + 150px side padding, 3 stats centered with 94px gap */}
         <div
           style={{
-            maxWidth: 1100, margin: "0 auto", padding: "44px 30px", boxSizing: "border-box",
-            display: "flex", justifyContent: "space-around", textAlign: "center", color: "#fff",
+            padding: "41px 150px", boxSizing: "border-box",
+            display: "flex", justifyContent: "center", gap: 94, textAlign: "center", color: "#fff",
           }}
         >
           {[
@@ -134,8 +120,10 @@ export default function Section3() {
             { n: "40,000", l: "Happy Customers" },
           ].map((s) => (
             <div key={s.l}>
-              <div style={{ fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 46, lineHeight: 1 }}>{s.n}</div>
-              <div style={{ fontFamily: HEAD_FONT, fontWeight: 500, fontSize: 16, marginTop: 10, opacity: 0.9 }}>{s.l}</div>
+              {/* Figma: Plus Jakarta Sans 700 / 44px / #F6E9F3 */}
+              <div style={{ fontFamily: HEAD_FONT, fontWeight: 700, fontSize: 44, lineHeight: 1, color: "#F6E9F3" }}>{s.n}</div>
+              {/* Figma: Plus Jakarta Sans 400 / 16px / #F6E9F3 */}
+              <div style={{ fontFamily: HEAD_FONT, fontWeight: 400, fontSize: 16, marginTop: 12, color: "#F6E9F3" }}>{s.l}</div>
             </div>
           ))}
         </div>

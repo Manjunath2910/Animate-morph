@@ -8,7 +8,7 @@ const font = "'Plus Jakarta Sans', sans-serif";
 export default function Section5() {
   return (
     <section style={{ width: "100%", backgroundColor: CREAM, padding: "64px 0 44px" }}>
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px", textAlign: "center", boxSizing: "border-box" }}>
+      <div style={{ maxWidth: 1188, margin: "0 auto", padding: "0 24px", textAlign: "center", boxSizing: "border-box" }}>
         <h2
           style={{
             fontFamily: font, fontWeight: 700, fontSize: 48, lineHeight: 1.2,
@@ -27,8 +27,9 @@ export default function Section5() {
         </p>
       </div>
 
-      {/* Three-card row */}
-      <div style={{ maxWidth: 1140, margin: "36px auto 0", padding: "0 24px", boxSizing: "border-box" }}>
+      {/* Three-card row — the image spans the full 1440 section width (it already has the
+          cream side margins baked in, matching the section background). */}
+      <div style={{ width: "100%", margin: "36px auto 0" }}>
         <img src={cards} alt="Send, Bank, Spend" style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
     </section>
