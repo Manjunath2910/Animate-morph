@@ -302,7 +302,7 @@ export default function App() {
               <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 27, width: "auto", flexShrink: 0, marginRight: 10, display: "block", verticalAlign: "middle", transform: "translateY(-1px)" }} />
               <motion.p
                 className="shrink-0 whitespace-nowrap"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16.8, lineHeight: "25.302px", color: logoFill }}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16, lineHeight: "27.842px", color: logoFill }}
                 animate={{ color: logoFill }}
                 transition={T}
               >
