@@ -5,6 +5,9 @@ import flagIn from "@/imports/section2/flag_india.png";
 import remitlyLogo from "@/imports/section2/remitly_logo.png";
 import zLogo from "@/imports/section2/z_logo.png";
 import googleG from "@/imports/section2/google_g.png";
+import fbDelivery from "@/imports/section2/fb_delivery.png";
+import fbRate from "@/imports/section2/fb_rate.png";
+import fbFees from "@/imports/section2/fb_fees.png";
 
 // ─── Section 2 — "See exactly what your family receives" ──────────────────────
 const CARD_W = 1200;
@@ -13,7 +16,6 @@ const FONT = "'Plus Jakarta Sans', sans-serif";
 const BOX = "#F8EFE7";
 const PLUM = "#750558";
 const GREY = "#8a8a8a";
-const ICON = "#C81E78";
 const REMITLY_MARGIN = 0.1228;
 
 // Currency options (same as the live site) and their round flags.
@@ -47,23 +49,10 @@ const Plane = () => (
 );
 
 const featIcon: React.CSSProperties = { flexShrink: 0 };
-const IconDelivery = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={featIcon}>
-    <circle cx="12" cy="13" r="8" stroke={ICON} strokeWidth="1.7" />
-    <path d="M12 13V9M12 13l3 2M9 2h6" stroke={ICON} strokeWidth="1.7" strokeLinecap="round" />
-  </svg>
-);
-const IconRate = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={featIcon}>
-    <path d="M4 8h13l-3-3M20 16H7l3 3" stroke={ICON} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-const IconFees = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style={featIcon}>
-    <rect x="4" y="3" width="16" height="18" rx="2" stroke={ICON} strokeWidth="1.7" />
-    <path d="M8 8h8M8 12h8M8 16h5" stroke={ICON} strokeWidth="1.7" strokeLinecap="round" />
-  </svg>
-);
+// Exact feature-bar icons supplied from the Figma design (fast stopwatch, exchange, calculator+clock).
+const IconDelivery = () => <img src={fbDelivery} alt="" width={26} height={26} style={featIcon} />;
+const IconRate = () => <img src={fbRate} alt="" width={26} height={26} style={featIcon} />;
+const IconFees = () => <img src={fbFees} alt="" width={26} height={26} style={featIcon} />;
 
 export default function Section2() {
   const [sendText, setSendText] = useState("0.00");
