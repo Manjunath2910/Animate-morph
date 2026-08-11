@@ -147,9 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      // Scale the 1440 design to fill the viewport width (never upscale past 1:1). This keeps the
-      // page the same relative size on every screen — localhost and the deployed site match.
-      const s = Math.min(1, cw / 1440);
+      // Always scale the 1440 design to exactly fill the viewport width (up- or down-scale). No
+      // cap, so the page fills the screen edge-to-edge on any width — no side margins anywhere.
+      const s = cw / 1440;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
