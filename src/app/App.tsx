@@ -147,9 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      // Render the whole page at a fixed 1000px wide (1440 design scaled to 1000), centred with
+      // Render the whole page at a fixed 1100px wide (1440 design scaled to 1100), centred with
       // white margins on wider screens. Narrower screens scale down further to fit.
-      const s = Math.min(1000, cw) / 1440;
+      const s = Math.min(1100, cw) / 1440;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
