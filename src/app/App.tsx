@@ -147,10 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar)
-      // Render the page at its exact native design size: 1440 × 12010 (scale = 1, no scaling).
-      // Wider screens centre it with white margins; narrower screens scroll horizontally.
-      const s = 1;
-      void cw;
+      // Scale the 1440 design to exactly fill the viewport width, so the page always fills the
+      // screen edge-to-edge (no white margins) no matter the screen size or browser zoom.
+      const s = cw / 1440;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
