@@ -147,9 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar)
-      // Render the page at a fixed 1100px wide (1440 design scaled to 1100), centred with white
-      // margins on wider screens. Narrower screens scale down further to fit.
-      const s = Math.min(1100, cw) / 1440;
+      // Scale the 1440 design to fill the whole viewport width — no white side margins, content
+      // as large as possible, whatever the screen width or browser zoom.
+      const s = cw / 1440;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
