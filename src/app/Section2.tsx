@@ -5,9 +5,9 @@ import flagIn from "@/imports/section2/flag_india.png";
 import remitlyLogo from "@/imports/section2/remitly_logo.png";
 import zLogo from "@/imports/section2/z_logo.png";
 import googleG from "@/imports/section2/google_g.png";
-import fbDelivery from "@/imports/section2/fb_delivery.png";
-import fbRate from "@/imports/section2/fb_rate.png";
-import fbFees from "@/imports/section2/fb_fees.png";
+import fbDelivery from "@/imports/section2/fb_delivery_v2.png";
+import fbRate from "@/imports/section2/fb_rate_v2.png";
+import fbFees from "@/imports/section2/fb_fees_v2.png";
 
 // ─── Section 2 — "See exactly what your family receives" ──────────────────────
 const CARD_W = 1200;
@@ -36,10 +36,10 @@ const Check = () => (
     <path d="M5 12l5 5 9-11" stroke={PLUM} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+// Phosphor "SealCheck" (regular / outline weight), 16px, magenta — matches Figma node 887-808.
 const CheckBadge = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-    <path d="M12 1.7l2.5 1.9 3.1-.2 .9 3 2.5 1.9-1 3 1 3-2.5 1.9-.9 3-3.1-.2L12 22.3l-2.5-1.9-3.1.2-.9-3L3 15.7l1-3-1-3 2.5-1.9.9-3 3.1.2z" fill="#CF7FB8" />
-    <path d="M8.6 12l2.2 2.2 4.4-4.7" stroke="#fff" strokeWidth="1.9" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  <svg width="16" height="16" viewBox="0 0 256 256" fill="#A82486" style={{ flexShrink: 0 }}>
+    <path d="M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-11.55,39.29c-4.79,5-9.75,10.17-12.38,16.52-2.52,6.1-2.63,13.07-2.73,19.82-.1,7-.21,14.33-3.32,17.43s-10.39,3.22-17.43,3.32c-6.75.1-13.72.21-19.82,2.73-6.35,2.63-11.52,7.59-16.52,12.38S132,224,128,224s-9.15-4.92-14.11-9.69-10.17-9.75-16.52-12.38c-6.1-2.52-13.07-2.63-19.82-2.73-7-.1-14.33-.21-17.43-3.32s-3.22-10.39-3.32-17.43c-.1-6.75-.21-13.72-2.73-19.82-2.63-6.35-7.59-11.52-12.38-16.52S32,132,32,128s4.92-9.15,9.69-14.11,9.75-10.17,12.38-16.52c2.52-6.1,2.63-13.07,2.73-19.82.1-7,.21-14.33,3.32-17.43S70.51,56.9,77.55,56.8c6.75-.1,13.72-.21,19.82-2.73,6.35-2.63,11.52-7.59,16.52-12.38S124,32,128,32s9.15,4.92,14.11,9.69,10.17,9.75,16.52,12.38c6.1,2.52,13.07,2.63,19.82,2.73,7,.1,14.33.21,17.43,3.32s3.22,10.39,3.32,17.43c.1,6.75.21,13.72,2.73,19.82,2.63,6.35,7.59,11.52,12.38,16.52S224,124,224,128,219.08,137.15,214.31,142.11ZM173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z" />
   </svg>
 );
 const Plane = () => (
@@ -100,7 +100,7 @@ export default function Section2() {
   };
   const flag: React.CSSProperties = { width: 40, height: 40, borderRadius: "50%", flexShrink: 0, objectFit: "cover" };
   const labelStyle: React.CSSProperties = { fontFamily: FONT, fontSize: 18, fontWeight: 400, color: GREY, marginBottom: 8 };
-  const feat: React.CSSProperties = { display: "flex", alignItems: "center", gap: 11, color: "#2f2f2f", fontFamily: FONT, fontSize: 19, fontWeight: 500, whiteSpace: "nowrap" };
+  const feat: React.CSSProperties = { display: "flex", alignItems: "center", gap: 11, color: "#ffffff", fontFamily: FONT, fontSize: 19, fontWeight: 500, whiteSpace: "nowrap" };
   const selector: React.CSSProperties = { display: "flex", alignItems: "center", cursor: "pointer", userSelect: "none" };
   const dropStyle: React.CSSProperties = {
     position: "absolute", top: "calc(100% + 6px)", left: 0, minWidth: 176, background: "#fff",
@@ -132,11 +132,13 @@ export default function Section2() {
   // #FFFDF7 but the user wants pure white), with the 1200×688 card centered — 120px side
   // margins and 89px top/bottom.
   return (
-    <section style={{ backgroundColor: "#ffffff", width: "100%", display: "flex", justifyContent: "center", alignItems: "center", padding: "89px 0", boxSizing: "border-box" }}>
+    <section style={{ backgroundColor: "#FFFBF2", width: "100%", height: 1024, display: "flex", justifyContent: "center", alignItems: "center", padding: 0, boxSizing: "border-box" }}>
       <div style={{ position: "relative", width: CARD_W, height: CARD_H, borderRadius: 24, overflow: "hidden" }}>
         {/* Photo positioned exactly as the Figma image fill (Scale: Crop):
             1467.04×745.22 at left -231.13, top -65.24 inside the 1200×688 card. */}
         <img src={couple} alt="A couple checking their phone" style={{ position: "absolute", width: 1467.04, height: 745.22, left: -231.13, top: -65.24, maxWidth: "none", objectFit: "cover", display: "block" }} />
+        {/* Frosted-glass blur behind the headline — soft fade-in from the top. */}
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 288, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", pointerEvents: "none", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 22%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 22%)" }} />
         {/* Dark gradient at the bottom for headline legibility (matches the Figma gradient overlay). */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,1,8,0) 46%, rgba(10,1,8,0.55) 100%)", pointerEvents: "none" }} />
 
@@ -146,7 +148,7 @@ export default function Section2() {
         </div>
 
         {/* Feature bar */}
-        <div style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: 83, background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", borderTop: "1px solid rgba(255,255,255,0.55)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", boxSizing: "border-box" }}>
+        <div style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: 87, background: "rgba(255,255,255,0.20)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "22px 24px", boxSizing: "border-box" }}>
           <div style={feat}><IconDelivery />Delivery estimate up front</div>
           <div style={feat}><IconRate />Real exchange rate, shown live</div>
           <div style={feat}><IconFees />Fees and total before you confirm</div>
@@ -156,7 +158,7 @@ export default function Section2() {
         <div style={{ position: "absolute", left: 671, top: 50, width: 499, height: 512, background: "#fff", border: "1px solid #FBEFEF", borderRadius: 23, boxShadow: "0 24px 60px rgba(50,30,45,0.14)", padding: "23px 26px", boxSizing: "border-box", display: "flex", flexDirection: "column" }}>
           {/* Rate pill */}
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#FFF2FE", border: "1.5px solid #E7B9DB", borderRadius: 999, padding: "5px 14px", fontFamily: FONT, fontSize: 15, fontWeight: 600, color: PLUM, whiteSpace: "nowrap" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#FFF2FE", border: "1px solid #A82486", borderRadius: 18, padding: "8px 12px", fontFamily: FONT, fontSize: 14, fontWeight: 600, color: "#750558", letterSpacing: "-0.38px", whiteSpace: "nowrap" }}>
               <img src={zLogo} alt="" style={{ height: 21 }} />
               <span>1&nbsp;{sendCur}&nbsp;=</span>
               <img src={googleG} alt="" style={{ height: 17 }} />

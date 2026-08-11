@@ -23,9 +23,13 @@ export default function ScaleToFit({ scale, children }: { scale: number; childre
   // Outer takes the scaled size: at fit-scale it equals the viewport width; when zoomed in
   // it's wider (page scrolls sideways); when zoomed out it's narrower and centered.
   return (
-    <div style={{ width: 1440 * scale, height, margin: "0 auto", overflow: "hidden", backgroundColor: "#FFFBF2" }}>
-      <div ref={inner} style={{ width: 1440, transformOrigin: "top left", transform: `scale(${scale})` }}>
-        {children}
+    // Full-width white track that flex-centers the capped design block, so on screens wider
+    // than 1440 the content sits dead-centre with white margins on both sides.
+    <div style={{ width: "100%", display: "flex", justifyContent: "center", backgroundColor: "#ffffff", overflowX: "hidden" }}>
+      <div style={{ width: 1440 * scale, height, flexShrink: 0, overflow: "hidden", backgroundColor: "#FFFBF2" }}>
+        <div ref={inner} style={{ width: 1440, transformOrigin: "top left", transform: `scale(${scale})` }}>
+          {children}
+        </div>
       </div>
     </div>
   );

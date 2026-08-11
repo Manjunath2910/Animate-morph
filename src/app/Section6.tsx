@@ -7,8 +7,17 @@ const font = "'Plus Jakarta Sans', sans-serif";
 
 export default function Section6() {
   return (
-    <section style={{ width: "100%", backgroundColor: CREAM, padding: "44px 0 64px" }}>
+    <section style={{ width: "100%", height: 1024, backgroundColor: CREAM, display: "flex", flexDirection: "column", justifyContent: "center", boxSizing: "border-box" }}>
       <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px", textAlign: "center", boxSizing: "border-box" }}>
+        <div
+          style={{
+            display: "inline-block", background: "#FFF3D8", border: "1.5px solid #DAC491",
+            borderRadius: 999, padding: "9px 26px", marginBottom: 20,
+            fontFamily: font, fontWeight: 600, fontSize: 17, letterSpacing: "0.06em", color: PLUM,
+          }}
+        >
+          COMING SOON
+        </div>
         <h2
           style={{
             fontFamily: font, fontWeight: 700, fontSize: 48, lineHeight: 1.2,

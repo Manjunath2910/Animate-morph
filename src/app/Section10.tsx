@@ -1,4 +1,4 @@
-import footer from "@/imports/sec10/footer.png";
+import footer from "@/imports/sec10/magenta_footer.png";
 
 // ─── Section 10 — Footer (SEO links + magenta ZoltMoney footer) ───────────────
 export default function Section10() {

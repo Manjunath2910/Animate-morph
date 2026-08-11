@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import bgPhoto from "@/imports/section4/bg_photo.png";
 import logoZolt from "@/imports/section4/logo_zolt.png";
 import logoWise from "@/imports/section4/logo_wise.png";
 import logoRemitly from "@/imports/section4/logo_remitly.png";
@@ -11,10 +10,10 @@ import logoIcici from "@/imports/section4/logo_icici.png";
 // exchange rates, fees, recipient amounts, savings and timestamp are live; they
 // refresh every 10 seconds.
 const CW = 1440;
-const CH = 850;
+const CH = 1024;
 const AMT = 1000; // £1,000 basis
 const FONT = "'Plus Jakarta Sans', sans-serif";
-const CREAM = "#F6F3EB";
+const CREAM = "#FFFBF2";
 const GREY = "#9d8797";
 const PLUM = "#4E1E42";
 
@@ -77,16 +76,19 @@ export default function Section4() {
 
   return (
     <section style={{ width: "100%", backgroundColor: "#FFFBF2", overflow: "hidden" }}>
-      <div style={{ position: "relative", width: CW, height: CH, margin: "0 auto" }}>
-        <img src={bgPhoto} alt="" style={{ position: "absolute", inset: 0, width: CW, height: CH, objectFit: "cover" }} />
+      <div style={{ position: "relative", width: CW, height: CH, margin: "0 auto", backgroundColor: "#3F0831" }}>
 
         {/* Heading */}
-        <div style={{ position: "absolute", left: 150, top: 96, width: 1140, textAlign: "center", fontFamily: FONT, fontSize: 40, fontWeight: 700, lineHeight: 1.35, color: "#fff", letterSpacing: "-0.01em" }}>
+        <div style={{ position: "absolute", left: 150, top: 180, width: 1140, textAlign: "center", fontFamily: FONT, fontSize: 40, fontWeight: 700, lineHeight: 1.35, color: "#fff", letterSpacing: "-0.01em" }}>
           Sending money home should feel as<br />easy as sending a message.
+        </div>
+        {/* Subtitle */}
+        <div style={{ position: "absolute", left: 150, top: 292, width: 1140, textAlign: "center", fontFamily: FONT, fontSize: 18, fontWeight: 500, color: "rgba(255,255,255,0.85)" }}>
+          Save, invest, grow.
         </div>
 
         {/* Frosted comparison card */}
-        <div style={{ position: "absolute", left: 260, top: 268, width: 920, minHeight: 498, borderRadius: 24, border: "1px solid #FFFFFF", padding: "24px 40px", boxSizing: "border-box", background: "linear-gradient(0deg, rgba(153,153,153,0.21) 0%, rgba(0,0,0,0.21) 100%)", backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ position: "absolute", left: 127, top: 357, width: 1186, borderRadius: 28, border: "1px solid rgba(255,255,255,0.25)", padding: "28px 60px 12px", boxSizing: "border-box", background: "rgba(255,255,255,0.20)", backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)", display: "flex", flexDirection: "column", gap: 24 }}>
           {/* Title */}
           <div style={{ textAlign: "center", fontFamily: FONT, fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.01em" }}>
             Here's how much £1,000 gets you with ZoltMoney
@@ -111,6 +113,7 @@ export default function Section4() {
                   minHeight: 74, margin: r.zolt ? "0 14px" : "0", padding: r.zolt ? "0 14px" : "0 28px",
                   borderRadius: r.zolt ? 16 : 0,
                   background: r.zolt ? "linear-gradient(90deg, #7C0E5F 0%, #630B4B 100%)" : "transparent",
+                  boxShadow: r.zolt ? "0 10px 24px rgba(99,11,75,0.35)" : "none",
                 }}
               >
                 <img src={r.logo} alt="" style={{ height: r.h, width: "auto", objectFit: "contain", justifySelf: "start" }} />

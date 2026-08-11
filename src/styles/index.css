@@ -2,8 +2,11 @@
 @import './tailwind.css';
 @import './theme.css';
 
-/* Page background is black (shows around/behind the content). */
+/* Page background is white. `overflow-x: clip` kills any horizontal overflow (so the
+   centered content can't be pushed sideways) without creating a scroll container — so it
+   doesn't interfere with the Section 1 wheel stepping. */
 html, body, #root {
   margin: 0;
-  background-color: #000000;
+  background-color: #ffffff;
+  overflow-x: clip;
 }

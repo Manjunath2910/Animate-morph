@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import Section2 from "./Section2";
 import Section3 from "./Section3";
 import Section4 from "./Section4";
+import SectionAssurance from "./SectionAssurance";
 import Section5 from "./Section5";
 import Section6 from "./Section6";
 import Section7 from "./Section7";
@@ -12,10 +13,9 @@ import Section10 from "./Section10";
 import ScaleToFit from "./ScaleToFit";
 import svgPaths from "@/imports/Component9-1/svg-crb9wqbx6m";
 import zoltLogoWhite from "@/imports/section2/zoltmoney_white.png";
-import zoltLogoMagenta from "@/imports/section2/zoltmoney_magenta.png";
-import imgImage1 from "@/imports/Component9-1/dbdee0f2309cac6408de59ba3d77502698a7be1b.png";
-import imgPremiumPhoto from "@/imports/Component9-1/16a8882261213fd28e74883e457af281e75a728f.png";
+import imgImage1 from "@/imports/Component9-1/family_v2.png";
 import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4f715e6.png";
+import imgElderly from "@/imports/Component9-1/frame3_v2.png";
 
 type Slide = 1 | 2 | 3;
 
@@ -66,13 +66,14 @@ function PandaLogo({ fill }: { fill: string }) {
 }
 
 // ─── Money label ──────────────────────────────────────────────────────────────
-function MoneyLabel({ amount, label, visible }: { amount: string; label: string; visible: boolean }) {
+function MoneyLabel({ amount, label, visible, top = 441 }: { amount: string; label: string; visible: boolean; top?: number }) {
   return (
     <motion.div
       className="absolute flex flex-col items-center text-white uppercase text-center pointer-events-none"
-      style={{ top: 441, left: "50%", transform: "translateX(-50%)", width: 226, gap: 2 }}
-      animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.45 }}
+      style={{ left: "50%", width: 226, gap: 2 }}
+      initial={false}
+      animate={{ top, x: "-50%", opacity: visible ? 1 : 0 }}
+      transition={{ duration: DUR, ease: EASE }}
     >
       <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: "69.168px", lineHeight: "84.538px", whiteSpace: "nowrap" }}>
         {amount}
@@ -86,17 +87,17 @@ function MoneyLabel({ amount, label, visible }: { amount: string; label: string;
 
 // ─── Phone frame ─────────────────────────────────────────────────────────────
 function PhoneFrame({
-  left, leftStart, topTarget, visible, img, imgSize, imgOffset, notchTop, amount, label, amountVisible, amountTop, transition,
+  left, leftStart, topTarget, visible, img, imgSize, imgOffset, notchTop, amount, label, amountVisible, amountTop, transition, height = 514.468,
 }: {
   left: number; leftStart: number; topTarget: number; visible: boolean; img: string;
   imgSize: { w: number; h: number }; imgOffset: { l: number; t: number }; notchTop: number;
   amount: string; label: string; amountVisible: boolean; amountTop: number;
-  transition: { duration: number; ease: [number, number, number, number] };
+  transition: { duration: number; ease: [number, number, number, number] }; height?: number;
 }) {
   return (
     <motion.div
       className="absolute overflow-hidden"
-      style={{ width: 387.985, height: 514.468, borderTopLeftRadius: 44, borderTopRightRadius: 44, backgroundColor: "#717171", zIndex: 1 }}
+      style={{ width: 387.985, height, borderTopLeftRadius: 44, borderTopRightRadius: 44, backgroundColor: "#717171", zIndex: 1 }}
       animate={{ left: visible ? left : leftStart, top: topTarget, opacity: visible ? 1 : 0, scale: visible ? 1 : 0.82 }}
       transition={transition}
     >
@@ -146,8 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      const gutter = 0;   // no side letterbox — sections fill the full width on every screen
-      const s = (cw - gutter * 2) / 1440;   // scale the design to fill the width minus those small side gutters
+      // Cap the whole page a bit below the 1440 design (renders at ~1360px on wide screens) so
+      // there's a little more white on each side. Narrower screens still scale down to fit.
+      const s = Math.min(1100 / 1440, cw / 1440);
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
@@ -207,17 +209,10 @@ export default function App() {
 
   const isPurple = slide >= 3;
 
-  // Nav colours — white on frame 1 (over the photo) and frame 3 (over the magenta bg); magenta on frame 2 (over the white card)
-  const navWhite  = slide === 1 || slide === 3;
-  const logoFill  = navWhite ? "#ffffff" : "#750558";
-  const linkColor = navWhite ? "#ffffff" : "#750558";
-  const btnBg     = navWhite ? "#ffffff" : "#750558";
-  const btnText   = navWhite ? "#36052a" : "#ffffff";
-
-  // Mask — slides 3 & 4 both use exactly #750558; bg div matches so there's
-  // never a colour mismatch between the two purple slides
+  // Mask fill is the cream page colour on every frame (Figma frame 3 / node 887-710
+  // is cream #FFFBF2, not magenta) so the background stays consistent through the morph.
   const maskD    = slide <= 2 ? svgPaths.p32a00 : svgPaths.p3aa52400;
-  const maskFill = slide === 3 ? "#750558" : "#ffffff";
+  const maskFill = "#FFFBF2";
 
   // All frame transitions use the same smooth, gentle glide so the motion feels continuous on scroll.
   const involvesHero = slide === 1 || prevSlide.current === 1;
@@ -227,7 +222,7 @@ export default function App() {
   useEffect(() => { prevSlide.current = slide; }, [slide]);
 
   // Headline position: slides 3 & 4 move up to top
-  const hlTop = slide <= 2 ? (slide === 1 ? 614 : 607) : 141.61;
+  const hlTop = slide <= 2 ? (slide === 1 ? 786 : 777) : 181.61;
 
 
   return (
@@ -239,14 +234,14 @@ export default function App() {
       <div
         ref={heroRef}
         className="overflow-hidden"
-        style={{ position: "relative", width: 1440, height: 800, backgroundColor: "#FFFBF2" }}
+        style={{ position: "relative", width: 1440, height: 1024, backgroundColor: "#FFFBF2" }}
       >
       <div
         className="absolute overflow-hidden"
-        style={{ width: 1440, height: 800, left: 0, top: 0 }}
+        style={{ width: 1440, height: 1024, left: 0, top: 0 }}
       >
-        {/* ── Background — white base; slides 3 & 4 add solid purple underneath ── */}
-        <div className="absolute inset-0 bg-white" />
+        {/* ── Background — cream base (#FFFBF2, matches Figma) ── */}
+        <div className="absolute inset-0" style={{ backgroundColor: "#FFFBF2" }} />
         <div
           className="absolute inset-0"
           style={{
@@ -256,26 +251,28 @@ export default function App() {
           }}
         />
 
-        {/* ── Family photo — full-bleed & STATIC across frames 1↔2 (so 1→2 has zero shrink; the mask just forms the card). Returns to its original card size/position for frame 3. ── */}
-        <motion.div
-          className="absolute overflow-hidden"
-          style={{ left: "calc(50% + 6.47px)", transform: "translateX(-50%)" }}
-          animate={{
-            width:  slide === 1 ? 1452.933 : 1134.735,
-            height: slide === 1 ? 838.379  : 654.77,
-            top:    slide === 1 ? -17 : slide === 2 ? 166.61 : 205.61,
-          }}
-          transition={T}
-        >
-          <img alt="Family" src={imgImage1} className="absolute max-w-none"
-               style={{ width: "100%", height: "100.19%", top: "-0.19%", left: 0 }} />
+        {/* ── Family photo — fixed full-bleed 1440×1024 stage; the img animates its own crop.
+            Frame 1: native full source (Figma 887-557). Frames 2/3: design BG 1719×1146 placed
+            like node 887-599, zoomed to the family. The SVG mask forms the card windows. ── */}
+        <div className="absolute overflow-hidden" style={{ width: 1440, height: 1024, left: 0, top: 0 }}>
+          <motion.img alt="Family" src={imgImage1} className="absolute max-w-none"
+               animate={{
+                 // Frame 2: design BG (887-599). Frame 3 centre card: design image 66 (887-711),
+                 // a wider, more zoomed-out crop of the same family.
+                 width:  slide === 1 ? 1536 : slide === 2 ? 1719 : 1427.63,
+                 height: slide === 1 ? 1024 : slide === 2 ? 1146 : 951.8,
+                 left:   slide === 1 ? -48 : slide === 2 ? -133 : 6.19,
+                 top:    slide === 1 ? 0 : slide === 2 ? 60 : 220,
+               }}
+               transition={T}
+               style={{ display: "block" }} />
           <div className="absolute inset-0"
                style={{ background: "linear-gradient(to top, rgba(0,2,4,0.51) 0%, rgba(204,175,72,0) 94.883%)" }} />
-        </motion.div>
+        </div>
 
-        {/* ── SVG Mask — Smart Animate path morph ───────────────────────────── */}
+        {/* ── SVG Mask — Smart Animate path morph (1440×1024) ───────────────── */}
         <svg className="absolute pointer-events-none" preserveAspectRatio="none"
-             viewBox="0 0 1440 800" style={{ position: "absolute", inset: 0, width: 1440, height: 800 }}>
+             viewBox="0 0 1440 1024" style={{ position: "absolute", left: -2, top: -2, width: 1444, height: 1028 }}>
           <motion.path
             initial={{ d: svgPaths.p32a00, opacity: 0, fill: "#ffffff" }}
             animate={{ d: maskD, opacity: slide === 1 ? 0 : 1, fill: maskFill }}
@@ -283,61 +280,44 @@ export default function App() {
           />
         </svg>
 
-        {/* ── White pill — top of cutout window (slides 3 & 4 only) ─────────── */}
+        {/* ── White pill — top notch of the centre family card (frame 3) ────── */}
         <motion.div
           className="absolute bg-white"
-          style={{ width: 92.204, height: 30.337, top: 323.32, left: "50%", transform: "translateX(-50%)", borderRadius: 55.736 }}
+          style={{ width: 92.204, height: 30.337, top: 425, left: "50%", transform: "translateX(-50%)", borderRadius: 55.736 }}
           animate={{ opacity: isPurple ? 1 : 0 }}
           transition={T}
         />
 
-        {/* ── Navigation ────────────────────────────────────────────────────── */}
+        {/* ── Navigation — frosted pill bar (Figma node 887-558) ───────────────
+            Container: 1010.79×71, centered, top 44, radius 16, padding 13.4,
+            bg rgba(33,33,33,0.20) + backdrop blur. Left group: logo + Personal
+            pill + Business. Right group: About Us · About Us · Download App pill. */}
         <div
-          className="absolute flex items-center"
-          style={{ left: "calc(50% + 0.2px)", top: "calc(50% - 346px)", transform: "translate(-50%, -50%)", gap: 88, zIndex: 10 }}
+          className="absolute"
+          style={{
+            top: 44, left: "50%", transform: "translateX(-50%)",
+            width: 1010.79, height: 71, borderRadius: 16, padding: "0 13.4px",
+            boxSizing: "border-box", backgroundColor: "rgba(33,33,33,0.20)",
+            backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            zIndex: 10, fontFamily: "'Plus Jakarta Sans', sans-serif",
+          }}
         >
-          <div className="flex items-center shrink-0" style={{ gap: 48 }}>
-            {/* Logo + brand label */}
-            <div className="flex items-center shrink-0">
-              <img src={navWhite ? zoltLogoWhite : zoltLogoMagenta} alt="ZoltMoney" style={{ height: 27, width: "auto", flexShrink: 0, marginRight: 10, display: "block", verticalAlign: "middle", transform: "translateY(-1px)" }} />
-              <motion.p
-                className="shrink-0 whitespace-nowrap"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 16, lineHeight: "27.842px", color: logoFill }}
-                animate={{ color: logoFill }}
-                transition={T}
-              >
-                Personal
-              </motion.p>
+          {/* Left group — logo + Personal/Business segmented toggle */}
+          <div className="flex items-center" style={{ gap: 12 }}>
+            <img src={zoltLogoWhite} alt="ZoltMoney" style={{ height: 27, width: "auto", display: "block" }} />
+            {/* Toggle track (Figma Frame 82: bg #000000 @16%, radius 10, gap 4) */}
+            <div className="flex items-center" style={{ gap: 4, background: "rgba(0,0,0,0.16)", borderRadius: 16 }}>
+              <div style={{ padding: "8px 20px", borderRadius: 16, background: "#ffffff", color: "#750558", fontWeight: 600, fontSize: 16, lineHeight: 1 }}>Personal</div>
+              <div style={{ padding: "8px 20px 8px 12px", color: "#FFFBF2", fontWeight: 500, fontSize: 16, lineHeight: 1 }}>Business</div>
             </div>
-            {/* Nav links */}
-            <motion.div
-              className="flex items-center shrink-0"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500, fontSize: 16, lineHeight: "27.842px", gap: 24, color: linkColor }}
-              animate={{ color: linkColor }}
-              transition={T}
-            >
-              <span style={{ width: 93 }}>Business</span>
-              <span style={{ width: 96 }}>About Us</span>
-              <span style={{ width: 49 }}>Blog</span>
-            </motion.div>
           </div>
-
-          {/* CTA button */}
-          <motion.div
-            className="flex items-center shrink-0"
-            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 6, paddingBottom: 6, borderRadius: 999, backgroundColor: btnBg }}
-            animate={{ backgroundColor: btnBg }}
-            transition={T}
-          >
-            <motion.span
-              className="whitespace-nowrap"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 16, lineHeight: "27.842px", color: btnText }}
-              animate={{ color: btnText }}
-              transition={T}
-            >
-              Download App
-            </motion.span>
-          </motion.div>
+          {/* Right group */}
+          <div className="flex items-center" style={{ gap: 26 }}>
+            <span style={{ color: "#ffffff", fontWeight: 500, fontSize: 16 }}>About Us</span>
+            <span style={{ color: "#ffffff", fontWeight: 500, fontSize: 16 }}>About Us</span>
+            <div style={{ padding: "11px 22px", borderRadius: 999, background: "#ffffff", color: "#750558", fontWeight: 700, fontSize: 16, lineHeight: 1 }}>Download App</div>
+          </div>
         </div>
 
         {/* ── Headline — forced 2-line break: "ONE FINANCIAL HOME FOR" / "LIFE ACROSS BORDERS." */}
@@ -347,34 +327,35 @@ export default function App() {
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontWeight: 800,
             fontSize: "61px", lineHeight: "73px", letterSpacing: "-0.5px",
-            color: "#e3cdde", width: 1200,
+            width: 1200,
             left: "50%", transform: "translateX(-50%)",
           }}
-          animate={{ top: hlTop }}
+          animate={{ top: hlTop, color: slide === 3 ? "#3F0831" : "#e3cdde" }}
           transition={T}
         >
           One financial home for<br />life across borders.
         </motion.p>
 
         {/* ── Money labels ──────────────────────────────────────────────────── */}
-        <MoneyLabel amount="$ 1500" label="Sent Home"      visible={slide === 2} />
-        <MoneyLabel amount="$ 800"  label="Sent to family" visible={slide === 3} />
+        {/* Centre family card shows $1500 SENT HOME in both frame 2 and 3 (Figma 887-596 / 887-710) */}
+        <MoneyLabel amount="$ 1500" label="Sent Home" top={slide === 2 ? 505 : 648} visible={slide === 2 || slide === 3} />
 
         {/* ── Phone frames ──────────────────────────────────────────────────── */}
+        {/* Side cards — exact Figma sizes: fe1 388×634 @ (76,456), fe2 388×664 @ (977,447) */}
         <PhoneFrame
-          left={76} leftStart={532} topTarget={352} visible={slide === 3}
-          img={imgPremiumPhoto}
-          imgSize={{ w: 846.709, h: 538.792 }} imgOffset={{ l: -237.81, t: -21.31 }}
+          left={76} leftStart={532} topTarget={456} height={634} visible={slide === 3}
+          img={imgElderly}
+          imgSize={{ w: 1061, h: 707.69 }} imgOffset={{ l: -410, t: -27 }}
           notchTop={33.41}
-          amount="$ 1500" label="Sent to Home" amountVisible={slide === 3} amountTop={213}
+          amount="$ 800" label="Sent to Family" amountVisible={slide === 3} amountTop={300}
           transition={cardT}
         />
         <PhoneFrame
-          left={987} leftStart={532} topTarget={352} visible={slide === 3}
+          left={977} leftStart={532} topTarget={447} height={664} visible={slide === 3}
           img={img746B3D}
-          imgSize={{ w: 931.3, h: 516 }} imgOffset={{ l: -271.66, t: -1 }}
+          imgSize={{ w: 1196, h: 662 }} imgOffset={{ l: -391.5, t: -13 }}
           notchTop={22.41}
-          amount="$ 2000" label="Sent for STUDY" amountVisible={slide === 3} amountTop={213}
+          amount="$ 2000" label="Sent for STUDY" amountVisible={slide === 3} amountTop={300}
           transition={cardT}
         />
 
@@ -382,7 +363,7 @@ export default function App() {
         <motion.div
           className="absolute flex items-center"
           style={{
-            left: "calc(50% + 6.47px)", top: 592, transform: "translateX(-50%)",
+            left: "calc(50% + 6.47px)", top: 815, transform: "translateX(-50%)",
             backgroundColor: "rgba(255,255,255,0.31)", borderRadius: 15, gap: 5.615, padding: "6px 12px",
           }}
           animate={{ opacity: slide >= 3 ? 1 : 0 }}
@@ -423,11 +404,12 @@ export default function App() {
       </div>
       <Section2 />
       <Section3 />
+      <Section8 />{/* "Built for people building lives across borders" + $500M stats (Figma 887-1105) sits right after Section 3 */}
       <Section4 />
       <Section5 />
+      <SectionAssurance />{/* "Zolt Assurance, Transfer with Confidence" (Figma 887-1850) — after section 6 */}
       <Section6 />
       <Section7 />
-      <Section8 />
       <Section9 />
       <Section10 />
     </ScaleToFit>
