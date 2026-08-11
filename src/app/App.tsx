@@ -146,10 +146,11 @@ export default function App() {
 
   useEffect(() => {
     const calc = () => {
-      const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar) → no horizontal overflow
-      // Render the whole page at a fixed 1100px wide (1440 design scaled to 1100), centred with
-      // white margins on wider screens. Narrower screens scale down further to fit.
-      const s = Math.min(1100, cw) / 1440;
+      const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar)
+      // Render the page at its exact native design size: 1440 × 12010 (scale = 1, no scaling).
+      // Wider screens centre it with white margins; narrower screens scroll horizontally.
+      const s = 1;
+      void cw;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
@@ -234,11 +235,11 @@ export default function App() {
       <div
         ref={heroRef}
         className="overflow-hidden"
-        style={{ position: "relative", width: 1440, height: 1024, backgroundColor: "#FFFBF2" }}
+        style={{ position: "relative", width: 1440, height: 950, backgroundColor: "#FFFBF2" }}
       >
       <div
         className="absolute overflow-hidden"
-        style={{ width: 1440, height: 1024, left: 0, top: 0 }}
+        style={{ width: 1440, height: 950, left: 0, top: 0 }}
       >
         {/* ── Background — cream base (#FFFBF2, matches Figma) ── */}
         <div className="absolute inset-0" style={{ backgroundColor: "#FFFBF2" }} />
@@ -259,10 +260,10 @@ export default function App() {
                animate={{
                  // Frame 2: design BG (887-599). Frame 3 centre card: design image 66 (887-711),
                  // a wider, more zoomed-out crop of the same family.
-                 width:  slide === 1 ? 1536 : slide === 2 ? 1719 : 1427.63,
-                 height: slide === 1 ? 1024 : slide === 2 ? 1146 : 951.8,
-                 left:   slide === 1 ? -48 : slide === 2 ? -133 : 6.19,
-                 top:    slide === 1 ? 0 : slide === 2 ? 60 : 220,
+                 width:  slide === 1 ? 1536 : slide === 2 ? 1492 : 1427.63,
+                 height: slide === 1 ? 1024 : slide === 2 ? 995 : 951.8,
+                 left:   slide === 1 ? -48 : slide === 2 ? 5 : 6.19,
+                 top:    slide === 1 ? 0 : slide === 2 ? 114 : 220,
                }}
                transition={T}
                style={{ display: "block" }} />
@@ -345,7 +346,7 @@ export default function App() {
         <PhoneFrame
           left={76} leftStart={532} topTarget={456} height={634} visible={slide === 3}
           img={imgElderly}
-          imgSize={{ w: 1061, h: 707.69 }} imgOffset={{ l: -410, t: -27 }}
+          imgSize={{ w: 951, h: 634 }} imgOffset={{ l: -347, t: 0 }}
           notchTop={33.41}
           amount="$ 800" label="Sent to Family" amountVisible={slide === 3} amountTop={300}
           transition={cardT}
@@ -353,7 +354,7 @@ export default function App() {
         <PhoneFrame
           left={977} leftStart={532} topTarget={447} height={664} visible={slide === 3}
           img={img746B3D}
-          imgSize={{ w: 1196, h: 662 }} imgOffset={{ l: -391.5, t: -13 }}
+          imgSize={{ w: 1150, h: 637 }} imgOffset={{ l: -371, t: 0 }}
           notchTop={22.41}
           amount="$ 2000" label="Sent for STUDY" amountVisible={slide === 3} amountTop={300}
           transition={cardT}
