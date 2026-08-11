@@ -147,9 +147,9 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar)
-      // Fill ~82% of the viewport width, so the page sits comfortably inside the edges with a
-      // white margin on each side — not full-bleed, and proportional at any screen/zoom.
-      const s = (cw / 1440) * 0.82;
+      // Fill ~66% of the viewport width, so the page sits inside the edges with a white margin on
+      // each side — not full-bleed, and proportional at any screen/zoom.
+      const s = (cw / 1440) * 0.66;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
