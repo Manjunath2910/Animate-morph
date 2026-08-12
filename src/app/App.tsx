@@ -148,9 +148,10 @@ export default function App() {
   useEffect(() => {
     const calc = () => {
       const cw = document.documentElement.clientWidth || window.innerWidth;   // usable width (excludes the scrollbar)
-      // Fill ~66% of the viewport width, so the page sits inside the edges with a white margin on
-      // each side — not full-bleed, and proportional at any screen/zoom.
-      const s = (cw / 1440) * 0.66;
+      // Phones & tablets (< 1024px): fill the full width so the design fits edge-to-edge with no
+      // wasted side margins. Wide desktop screens (>= 1024px): render at ~66% width, centred with
+      // white margins (the smaller desktop look).
+      const s = cw < 1024 ? cw / 1440 : (cw / 1440) * 0.66;
       setLayout({ scale: s, ox: 0, oy: 0 });
     };
     calc();
@@ -273,7 +274,7 @@ export default function App() {
 
         {/* ── SVG Mask — Smart Animate path morph (1440×1024) ───────────────── */}
         <svg className="absolute pointer-events-none" preserveAspectRatio="none"
-             viewBox="0 0 1440 1024" style={{ position: "absolute", left: -2, top: -2, width: 1444, height: 1028 }}>
+             viewBox="0 0 1440 1024" style={{ position: "absolute", left: -8, top: -8, width: 1456, height: 1044 }}>
           <motion.path
             initial={{ d: svgPaths.p32a00, opacity: 0, fill: "#ffffff" }}
             animate={{ d: maskD, opacity: slide === 1 ? 0 : 1, fill: maskFill }}
