@@ -16,6 +16,7 @@ import zoltLogoWhite from "@/imports/section2/zoltmoney_white.png";
 import imgImage1 from "@/imports/Component9-1/family_v2.png";
 import img746B3D from "@/imports/Component9-1/f61e95b32e992ccbeeb665551752926ac4f715e6.png";
 import imgElderly from "@/imports/Component9-1/frame3_v2.png";
+import zoltAssuranceBadge from "@/imports/Component9-1/zolt_assurance_badge.png";
 
 type Slide = 1 | 2 | 3;
 
@@ -359,45 +360,14 @@ export default function App() {
           transition={cardT}
         />
 
-        {/* ── Zolt Assurance pill (slide 4) ─────────────────────────────────── */}
+        {/* ── Zolt Assurance pill (slide 3) — exact Figma metallic badge (887-720) ── */}
         <motion.div
-          className="absolute flex items-center"
-          style={{
-            left: "calc(50% + 6.47px)", top: 815, transform: "translateX(-50%)",
-            backgroundColor: "rgba(255,255,255,0.31)", borderRadius: 15, gap: 5.615, padding: "6px 12px",
-          }}
+          className="absolute"
+          style={{ left: "calc(50% + 6.47px)", top: 815, transform: "translateX(-50%)" }}
           animate={{ opacity: slide >= 3 ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Zolt Assurance logo — glossy 3D magenta shield (light-pink rim + silver lightning bolt) */}
-          <div style={{ width: 30, height: 30, position: "relative", flexShrink: 0 }}>
-            <svg width="30" height="30" viewBox="0 0 94 93" fill="none">
-              <defs>
-                <linearGradient id="zaBody" x1="24" y1="10" x2="70" y2="84" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#EA00A2" />
-                  <stop offset="1" stopColor="#BF0088" />
-                </linearGradient>
-                <linearGradient id="zaBolt" x1="36" y1="24" x2="58" y2="70" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#FFFFFF" />
-                  <stop offset="1" stopColor="#D9D9D9" />
-                </linearGradient>
-                <filter id="zaSh" x="-25%" y="-20%" width="150%" height="155%">
-                  <feDropShadow dx="2" dy="5" stdDeviation="4" floodColor="#5f4458" floodOpacity="0.38" />
-                </filter>
-              </defs>
-              <g filter="url(#zaSh)">
-                {/* light-pink rim */}
-                <path d="M21 7 H73 Q81 7 81 15 V45 Q81 71 47 88 Q13 71 13 45 V15 Q13 7 21 7 Z" fill="#F2ABDE" />
-                {/* magenta body */}
-                <path d="M25 14 H69 Q75 14 75 20 V45 Q75 66 47 80 Q19 66 19 45 V20 Q19 14 25 14 Z" fill="url(#zaBody)" />
-                {/* lightning bolt */}
-                <path d="M52.9 22 L28.8 52.9 H42.9 L39.4 72 L65.2 39.7 H50.5 Z" fill="url(#zaBolt)" />
-              </g>
-            </svg>
-          </div>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#ffffff", whiteSpace: "nowrap", lineHeight: "29.335px" }}>
-            Zolt Assurance
-          </span>
+          <img src={zoltAssuranceBadge} alt="Zolt Assurance" style={{ height: 42, width: "auto", display: "block" }} />
         </motion.div>
 
       </div>
